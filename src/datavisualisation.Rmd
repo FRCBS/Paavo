@@ -1,0 +1,158 @@
+---
+title: "Data exploration"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+```
+
+# Loading data
+
+
+
+```{r ilposdata}
+
+load("../data/ilposdata.RData")
+# load("../data/ilposdata.Rdata")
+
+load("../data/paavodata.RData")
+```
+
+# table 1 
+```{r}
+
+
+#table 1 
+library(arsenal)
+
+tab1 <- tableby(gender ~ Hb + age+ aborh + age.group + FirstEvent, data=ilposdata)
+summary(tab1, text=T)
+results="asis"
+
+# remove p-values and missing values and make it look prettier
+```
+
+
+# Preprocessing
+
+You can also embed plots, for example:
+## Donation data
+
+```{r pressure, echo=FALSE}
+nb_donations_data <-
+  ilposdata %>% 
+    mutate(Year = year(dateonly)) %>% 
+    filter(donat_phleb == "K") %>% 
+    count(donor,Year, zip)
+ 
+ summarised_donor_data <- 
+  ilposdata %>% 
+    mutate(Year = year(dateonly),
+           Hb = ifelse(is.nan(Hb), NA, Hb)) %>% 
+    group_by(donor, Year, zip) %>% 
+    summarize(mean_hb=mean(Hb, na.rm = TRUE)) %>% 
+   drop_na(mean_hb) %>% 
+   full_join(nb_donations_data,
+             by = c("donor", "zip","Year")) %>% 
+   mutate(n = replace_na(n, 0))
+
+```
+
+## Paavo data
+```{r}
+preprocessed_paavo_data <- 
+  paavodata %>% 
+    dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi) %>% 
+    rename(zip = pono,
+           Year= vuosi,
+           medianincome= hr_mtu,
+           averageincome= hr_ktu,
+           Zipname= nimi)
+```
+
+
+
+```{r}
+final_data <-
+  left_join(summarised_donor_data,
+            preprocessed_paavo_data,
+            by = c("zip", "Year")) %>% 
+  filter(Year > 2014)
+```
+
+# Preliminary plots
+
+```{r}
+final_data %>% 
+  ggplot(aes(x = medianincome)) +
+  geom_histogram(binwidth = 1000) +
+  facet_grid(Year ~. )
+```
+```{r}
+final_data %>% 
+  ggplot(aes(x = averageincome)) +
+  geom_histogram(binwidth = 1000) +
+  facet_grid(Year ~. )
+```
+# educational distributions
+```{r} 
+#add educational data to paavodata and combine the education data to 3 categories: 1) basic level 2) Matriculation examination and vocational diploma, 3) university degree (higher and lower)
+
+preprocessed_paavo_data <- 
+  paavodata %>% 
+    dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi, ko_perus, ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork) %>% 
+    rename(zip = pono,
+           Year= vuosi,
+           medianincome= hr_mtu,
+           averageincome= hr_ktu,
+           Zipname= nimi,
+           Basiceducation=ko_perus)
+
+#Remove the old variables, which were combined
+preprocessed_paavo_data["secondaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_yliop",
+                                  "ko_ammat")])
+preprocessed_paavo_data["tertiaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_al_kork",
+                                 "ko_yl_kork")])
+preprocessed_paavo_data <- subset(preprocessed_paavo_data, select=-c(ko_yliop,
+                                                                     ko_ammat,
+                                                                     ko_al_kork,
+                                                                     ko_yl_kork))
+
+
+final_data <-
+  left_join(final_data,
+            preprocessed_paavo_data,
+            by = c("zip", "Year")) %>% 
+  filter(Year > 2014)
+```
+
+
+```{r} 
+final_data %>% 
+ggplot(aes(x = Basiceducation)) +
+geom_histogram(binwidth = 1000) +
+  facet_grid(Year ~. )
+```
+```{r}
+final_data %>% 
+ggplot(aes(x = secondaryeducation)) +
+geom_histogram(binwidth = 1000) +
+  facet_grid(Year ~. )
+
+```
+
+```{r}
+final_data %>% 
+ggplot(aes(x = tertiaryeducation)) +
+geom_histogram(binwidth = 1000) +
+  facet_grid(Year ~. )
+```
+
+# unemployment and social benefits
+```{r}
+
+```
+
