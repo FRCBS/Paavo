@@ -65,7 +65,7 @@ summary(tab1, text=T)
 ``` r
 results="asis"
 
-# remove p-values and missing values and make it look prettier
+# remove p-values + missing values and make it look prettier
 ```
 
 # Preprocessing
@@ -119,7 +119,7 @@ final_data %>%
     ## Warning: Removed 21895 rows containing non-finite values (stat_bin).
 
 ![](datavisualisation_files/figure-gfm/unnamed-chunk-5-1.png)<!-- --> \#
-educational
+educational, living arragements and job-status
 distributions
 
 ``` r
@@ -127,19 +127,25 @@ distributions
 
 preprocessed_paavo_data <- 
   paavodata %>% 
-    dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi, ko_perus, ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork) %>% 
+    dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi, ko_perus, ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork, pt_tyott, pt_opisk, pt_tyoll, te_omis_as, te_vuok_as) %>% 
     rename(zip = pono,
            Year= vuosi,
            medianincome= hr_mtu,
            averageincome= hr_ktu,
            Zipname= nimi,
-           Basiceducation=ko_perus)
+           Basiceducation=ko_perus,
+           unemployed = pt_tyott,
+           students = pt_opisk,
+           employed = pt_tyoll,
+           owner_apartment = te_omis_as,
+           rental_apartment = te_vuok_as)
 
 #Remove the old variables, which were combined
 preprocessed_paavo_data["secondaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_yliop",
                                   "ko_ammat")])
 preprocessed_paavo_data["tertiaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_al_kork",
                                  "ko_yl_kork")])
+
 preprocessed_paavo_data <- subset(preprocessed_paavo_data, select=-c(ko_yliop,
                                                                      ko_ammat,
                                                                      ko_al_kork,
@@ -186,4 +192,86 @@ geom_histogram(binwidth = 1000) +
 
 ![](datavisualisation_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-#
+# Plotting housing variables
+
+``` r
+final_data  %>% 
+ggplot(aes(x = owner_apartment)) +
+geom_histogram(binwidth = 1000) +
+  facet_grid(Year ~. )
+```
+
+    ## Warning: Removed 22150 rows containing non-finite values (stat_bin).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+``` r
+final_data  %>% 
+ggplot(aes(x = rental_apartment)) +
+geom_histogram(binwidth = 1000) +
+  facet_grid(Year ~. )
+```
+
+    ## Warning: Removed 22150 rows containing non-finite values (stat_bin).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-10-2.png)<!-- -->
+
+# Plotting main type of activity
+
+``` r
+final_data  %>% 
+ggplot(aes(x = unemployed)) +
+geom_histogram(binwidth = 1000) +
+  facet_grid(Year ~. )
+```
+
+    ## Warning: Removed 22221 rows containing non-finite values (stat_bin).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+``` r
+final_data  %>% 
+ggplot(aes(x = employed)) +
+geom_histogram(binwidth = 1000) +
+  facet_grid(Year ~. )
+```
+
+    ## Warning: Removed 22221 rows containing non-finite values (stat_bin).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-11-2.png)<!-- -->
+
+``` r
+final_data  %>% 
+ggplot(aes(x = students)) +
+geom_histogram(binwidth = 1000) +
+  facet_grid(Year ~. )
+```
+
+    ## Warning: Removed 22032 rows containing non-finite values (stat_bin).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-11-3.png)<!-- -->
+
+``` 
+# Voter turnout and biggest party by zip-code (pending)
+
+
+```
+
+\#GGally correlation matrix
+
+``` r
+library("GGally")
+```
+
+    ## Registered S3 method overwritten by 'GGally':
+    ##   method from   
+    ##   +.gg   ggplot2
+
+    ## 
+    ## Attaching package: 'GGally'
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     nasa
+
+\#Summarise the data by hb + average yearly count of donations
