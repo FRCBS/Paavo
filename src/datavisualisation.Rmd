@@ -151,7 +151,7 @@ geom_histogram(binwidth = 1000) +
   facet_grid(Year ~. )
 ```
 
-# unemployment and social benefits
+# 
 ```{r}
 
 ```
