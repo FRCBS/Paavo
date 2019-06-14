@@ -19,6 +19,8 @@ load("../data/ilposdata.RData")
 # load("../data/ilposdata.Rdata")
 
 load("../data/paavodata.RData")
+
+rename(ilposdata, sex= gender)
 ```
 
 # table 1 
@@ -97,6 +99,22 @@ final_data %>%
   geom_histogram(binwidth = 1000) +
   facet_grid(Year ~. )
 ```
+
+
+```{r}
+final_data %>% 
+  ggplot(aes(x = averageincome)) +
+  geom_histogram(binwidth = 1000) +
+  facet_grid(Year ~. ) +
+  scale_y_log10()
+```
+
+```{r}
+final_data %>% 
+  ggplot(aes(x = Year, y = averageincome)) +
+  geom_jitter(alpha = 0.2)
+```
+
 # educational, living arragements and job-status  distributions
 ```{r} 
 #add educational data to paavodata and combine the education data to 3 categories: 1) basic level 2) Matriculation examination and vocational diploma, 3) university degree (higher and lower)
@@ -106,9 +124,6 @@ preprocessed_paavo_data <-
     dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi, ko_perus, ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork, pt_tyott, pt_opisk, pt_tyoll, te_omis_as, te_vuok_as) %>% 
     rename(zip = pono,
            Year= vuosi,
-           medianincome= hr_mtu,
-           averageincome= hr_ktu,
-           Zipname= nimi,
            Basiceducation=ko_perus,
            unemployed = pt_tyott,
            students = pt_opisk,
@@ -191,20 +206,59 @@ geom_histogram(binwidth = 1000) +
 
 ```
 
-```
-# Voter turnout and biggest party by zip-code (pending)
+
+  
+# summarised by hb 
 ```{r}
 
+hb_by_zip <- final_data %>% 
+  group_by(zip, Year) %>% 
+  summarise(mean_hb=mean(mean_hb)) 
+
+hb_by_zip %>% 
+  ggplot(aes(x = Year, y = mean_hb)) +
+  geom_jitter(alpha = 0.2)
+
+
+```
+#   Added gender and deferrals and blood groups to the data + Plotting income(db) by gender
+```{r}
+blood_def_gender <-ilposdata %>% 
+count(gender, Hb_deferral, aborh) %>% 
+inner_join(ilposdata)
+  
+```
+
+
+# First time donors
+```{r}
 
 ```
 
 
-```
-#GGally correlation matrix 
+
+# correlation matrix and plots
+
 ```{r}
 library("GGally")
+
+
+
+
+
 ```
 
 
-#Summarise the data by hb + average yearly count of donations 
+# Compare the income distribution of blood donors to Finnish average distribution
 
+```{r}
+
+```
+
+# Count division of post codes between mobile and fixed sites.  (Calculate the average distance between zip code and donation site for modelling purposes). 
+```{r}
+
+```
+
+
+# Standard deviation and normal distribution 

@@ -8,7 +8,25 @@ load("../data/ilposdata.RData")
 # load("../data/ilposdata.Rdata")
 
 load("../data/paavodata.RData")
+
+rename(ilposdata, sex= gender)
 ```
+
+    ## # A tibble: 1,537,680 x 13
+    ##    donor Site  dateonly   status donat_phleb    Hb sex   aborh zip     age
+    ##    <fct> <fct> <date>     <fct>  <fct>       <dbl> <fct> <fct> <fct> <int>
+    ##  1 DR00… L3149 2018-10-08 -      K             141 Women A Rh… 90570    19
+    ##  2 DR00… L3149 2018-10-08 -      K             156 Men   O Rh… 90530    21
+    ##  3 DR00… L3149 2018-10-08 -      K             156 Men   A Rh… 90560    22
+    ##  4 DR00… L0564 2019-01-17 -      K             163 Men   A Rh… 90560    22
+    ##  5 DR00… L3149 2018-10-08 R      K             127 Women A Rh… 90570    20
+    ##  6 DR00… L3149 2019-01-14 E      *             138 Women A Rh… 90570    20
+    ##  7 DR00… L3149 2018-10-08 E      *             144 Women ""    90550    19
+    ##  8 DR00… L3149 2018-10-08 -      K             140 Women O Rh… 90530    21
+    ##  9 DR00… L3149 2018-10-08 -      K             128 Women B Rh… 90500    19
+    ## 10 DR00… L3149 2018-10-08 -      K             153 Women AB R… 90530    20
+    ## # … with 1,537,670 more rows, and 3 more variables: age.group <fct>,
+    ## #   Hb_deferral <fct>, FirstEvent <lgl>
 
 # table 1
 
@@ -118,9 +136,35 @@ final_data %>%
 
     ## Warning: Removed 21895 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-5-1.png)<!-- --> \#
-educational, living arragements and job-status
-distributions
+![](datavisualisation_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+final_data %>% 
+  ggplot(aes(x = averageincome)) +
+  geom_histogram(binwidth = 1000) +
+  facet_grid(Year ~. ) +
+  scale_y_log10()
+```
+
+    ## Warning: Removed 21895 rows containing non-finite values (stat_bin).
+
+    ## Warning: Transformation introduced infinite values in continuous y-axis
+
+    ## Warning: Removed 312 rows containing missing values (geom_bar).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+``` r
+final_data %>% 
+  ggplot(aes(x = Year, y = averageincome)) +
+  geom_jitter(alpha = 0.2)
+```
+
+    ## Warning: Removed 21895 rows containing missing values (geom_point).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+# educational, living arragements and job-status distributions
 
 ``` r
 #add educational data to paavodata and combine the education data to 3 categories: 1) basic level 2) Matriculation examination and vocational diploma, 3) university degree (higher and lower)
@@ -130,9 +174,6 @@ preprocessed_paavo_data <-
     dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi, ko_perus, ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork, pt_tyott, pt_opisk, pt_tyoll, te_omis_as, te_vuok_as) %>% 
     rename(zip = pono,
            Year= vuosi,
-           medianincome= hr_mtu,
-           averageincome= hr_ktu,
-           Zipname= nimi,
            Basiceducation=ko_perus,
            unemployed = pt_tyott,
            students = pt_opisk,
@@ -168,7 +209,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 21896 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
 final_data %>% 
@@ -179,7 +220,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 21896 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 final_data %>% 
@@ -190,7 +231,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 21896 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 # Plotting housing variables
 
@@ -203,7 +244,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 22150 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 final_data  %>% 
@@ -214,7 +255,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 22150 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-10-2.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-12-2.png)<!-- -->
 
 # Plotting main type of activity
 
@@ -227,7 +268,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 22221 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ``` r
 final_data  %>% 
@@ -238,7 +279,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 22221 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-11-2.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-13-2.png)<!-- -->
 
 ``` r
 final_data  %>% 
@@ -249,15 +290,37 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 22032 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-11-3.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-13-3.png)<!-- -->
 
-``` 
-# Voter turnout and biggest party by zip-code (pending)
+# summarised by hb
 
+``` r
+hb_by_zip <- final_data %>% 
+  group_by(zip, Year) %>% 
+  summarise(mean_hb=mean(mean_hb)) 
 
+hb_by_zip %>% 
+  ggplot(aes(x = Year, y = mean_hb)) +
+  geom_jitter(alpha = 0.2)
 ```
 
-\#GGally correlation matrix
+    ## Warning: Removed 32 rows containing missing values (geom_point).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+\# Added gender and deferrals and blood groups to the data + Plotting
+income(db) by gender
+
+``` r
+blood_def_gender <-ilposdata %>% 
+count(gender, Hb_deferral, aborh) %>% 
+inner_join(ilposdata)
+```
+
+    ## Joining, by = c("gender", "Hb_deferral", "aborh")
+
+# First time donors
+
+# correlation matrix and plots
 
 ``` r
 library("GGally")
@@ -274,4 +337,8 @@ library("GGally")
     ## 
     ##     nasa
 
-\#Summarise the data by hb + average yearly count of donations
+# Compare the income distribution of blood donors to Finnish average distribution
+
+# Count division of post codes between mobile and fixed sites. (Calculate the average distance between zip code and donation site for modelling purposes).
+
+# Standard deviation and normal distribution
