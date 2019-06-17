@@ -222,15 +222,32 @@ hb_by_zip %>%
 
 
 # correlation matrix and plots
-
+#Paavodata 
 ```{r}
 library("GGally")
 
-ggpairs(final_data,columns = 
+
+varspaavo <- c("medianincome","averageincome","tertiaryeducation","secondaryeducation","rental_apartment", "employed","unemployed","Basiceducation")
+
+ggpairs(final_data,columns= varspaavo)
 
 
 
 ```
+#correlation matrix with donor data 
+
+```{r}
+donorvars <- c ("Hb","age","gender","aborh")
+ggpairs(ilposdata, columns= donorvars)
+```
+#ggpairs with both datasets
+```{r}
+varboth <-  c( "mean_hb", "tertiaryeducation","medianincome","unemployed")
+ggpairs(final_data, columns= varboth)
+
+```
+
+
 
 
 # Compare the  distribution of blood donors to Finnish average distribution
@@ -261,4 +278,4 @@ group_by(donor,Year,population18)
 ```
 
 
-# clustering the zip codes 
+# clustering  the zip codes 
