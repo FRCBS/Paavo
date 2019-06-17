@@ -20,7 +20,10 @@ load("../data/ilposdata.RData")
 
 load("../data/paavodata.RData")
 
-rename(ilposdata, sex= gender)
+rename(ilposdata, sex= gender )
+
+rm(aluejakokartat,cc,Data,hoobee_data,nb_donations_data,paavo,paavo_shares,paavo_vars,paavo18,preprocessed_paavo_data,summarised_donor_data,zipcode_maps,api_key,columns_to_mutate,corvallis,file,hb_data,helsinki,i,results,share_column_suffix,sp.vaesto,collapse_names,data,get_geo,map_fi_zipcode,map_fi_zipcode_interactive,order_columns,paavo_aggr,sum_finite,wmean,zip_code_map,fi_commune_number2name)
+
 ```
 
 # table 1 
@@ -55,7 +58,10 @@ nb_donations_data <-
     mutate(Year = year(dateonly),
            Hb = ifelse(is.nan(Hb), NA, Hb)) %>% 
     group_by(donor, Year, zip) %>% 
-    summarize(mean_hb=mean(Hb, na.rm = TRUE)) %>% 
+    summarize(mean_hb=mean(Hb, na.rm = TRUE),
+              aborh=last(aborh),
+              gender=last(gender)
+                           ) %>% 
    drop_na(mean_hb) %>% 
    full_join(nb_donations_data,
              by = c("donor", "zip","Year")) %>% 
@@ -67,17 +73,33 @@ nb_donations_data <-
 ```{r}
 preprocessed_paavo_data <- 
   paavodata %>% 
-    dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi) %>% 
+    dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi, ko_perus, ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork, pt_tyott, pt_opisk, pt_tyoll, te_omis_as, te_vuok_as,he_vakiy, ko_ika18y) %>% 
     rename(zip = pono,
            Year= vuosi,
+           Basiceducation=ko_perus,
+           unemployed = pt_tyott,
+           students = pt_opisk,
+           employed = pt_tyoll,
+           owner_apartment = te_omis_as,
+           rental_apartment = te_vuok_as,
            medianincome= hr_mtu,
            averageincome= hr_ktu,
-           Zipname= nimi)
-```
+           population= he_vakiy,
+           population18= ko_ika18y)
+
+#Remove the old variables, which were combined
+preprocessed_paavo_data["secondaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_yliop",
+                                  "ko_ammat")])
+preprocessed_paavo_data["tertiaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_al_kork",
+                                 "ko_yl_kork")])
+
+preprocessed_paavo_data <- subset(preprocessed_paavo_data, select=-c(ko_yliop,
+                                                           ko_ammat, ko_al_kork,
+                                                                     ko_yl_kork))
 
 
 
-```{r}
+
 final_data <-
   left_join(summarised_donor_data,
             preprocessed_paavo_data,
@@ -92,6 +114,8 @@ final_data %>%
   ggplot(aes(x = medianincome)) +
   geom_histogram(binwidth = 1000) +
   facet_grid(Year ~. )
+
+
 ```
 ```{r}
 final_data %>% 
@@ -115,40 +139,8 @@ final_data %>%
   geom_jitter(alpha = 0.2)
 ```
 
-# educational, living arragements and job-status  distributions
-```{r} 
-#add educational data to paavodata and combine the education data to 3 categories: 1) basic level 2) Matriculation examination and vocational diploma, 3) university degree (higher and lower)
-
-preprocessed_paavo_data <- 
-  paavodata %>% 
-    dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi, ko_perus, ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork, pt_tyott, pt_opisk, pt_tyoll, te_omis_as, te_vuok_as) %>% 
-    rename(zip = pono,
-           Year= vuosi,
-           Basiceducation=ko_perus,
-           unemployed = pt_tyott,
-           students = pt_opisk,
-           employed = pt_tyoll,
-           owner_apartment = te_omis_as,
-           rental_apartment = te_vuok_as)
-
-#Remove the old variables, which were combined
-preprocessed_paavo_data["secondaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_yliop",
-                                  "ko_ammat")])
-preprocessed_paavo_data["tertiaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_al_kork",
-                                 "ko_yl_kork")])
-
-preprocessed_paavo_data <- subset(preprocessed_paavo_data, select=-c(ko_yliop,
-                                                                     ko_ammat,
-                                                                     ko_al_kork,
-                                                                     ko_yl_kork))
 
 
-final_data <-
-  left_join(final_data,
-            preprocessed_paavo_data,
-            by = c("zip", "Year")) %>% 
-  filter(Year > 2014)
-```
 
 
 ```{r} 
@@ -156,6 +148,8 @@ final_data %>%
 ggplot(aes(x = Basiceducation)) +
 geom_histogram(binwidth = 1000) +
   facet_grid(Year ~. )
+
+
 ```
 ```{r}
 final_data %>% 
@@ -221,19 +215,9 @@ hb_by_zip %>%
 
 
 ```
-#   Added gender and deferrals and blood groups to the data + Plotting income(db) by gender
-```{r}
-blood_def_gender <-ilposdata %>% 
-count(gender, Hb_deferral, aborh) %>% 
-inner_join(ilposdata)
-  
-```
 
 
-# First time donors
-```{r}
 
-```
 
 
 
@@ -242,17 +226,33 @@ inner_join(ilposdata)
 ```{r}
 library("GGally")
 
-
+ggpairs(final_data,columns = 
 
 
 
 ```
 
 
-# Compare the income distribution of blood donors to Finnish average distribution
+# Compare the  distribution of blood donors to Finnish average distribution
 
 ```{r}
+testi1 <- final_data %>% 
+group_by(donor,Year,population18)
 
+ testi1 %>% 
+  ggplot(aes(x=Basiceducation, y=population18)) +
+  geom_jitter(alpha= 0.2)  +
+ facet_grid(Year ~.)
+ 
+ testi1 %>% 
+  ggplot(aes(x=tertiaryeducation, y= population18)) +
+ geom_jitter(alpha= 0.2)+ 
+   facet_grid(Year ~.)
+ 
+ testi1 %>% 
+   ggplot(aes(x=secondaryeducation, y=population18)) +
+   geom_jitter (alpha=0.2) +
+   facet_grid(Year ~.)
 ```
 
 # Count division of post codes between mobile and fixed sites.  (Calculate the average distance between zip code and donation site for modelling purposes). 
@@ -261,4 +261,4 @@ library("GGally")
 ```
 
 
-# Standard deviation and normal distribution 
+# clustering the zip codes 

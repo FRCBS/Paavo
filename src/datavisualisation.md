@@ -9,7 +9,9 @@ load("../data/ilposdata.RData")
 
 load("../data/paavodata.RData")
 
-rename(ilposdata, sex= gender)
+rename(ilposdata, sex= gender
+       
+       )
 ```
 
     ## # A tibble: 1,537,680 x 13
@@ -95,15 +97,33 @@ You can also embed plots, for example: \#\# Donation data
 ``` r
 preprocessed_paavo_data <- 
   paavodata %>% 
-    dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi) %>% 
+    dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi, ko_perus, ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork, pt_tyott, pt_opisk, pt_tyoll, te_omis_as, te_vuok_as,he_vakiy, ko_ika18y) %>% 
     rename(zip = pono,
            Year= vuosi,
+           Basiceducation=ko_perus,
+           unemployed = pt_tyott,
+           students = pt_opisk,
+           employed = pt_tyoll,
+           owner_apartment = te_omis_as,
+           rental_apartment = te_vuok_as,
            medianincome= hr_mtu,
            averageincome= hr_ktu,
-           Zipname= nimi)
-```
+           population= he_vakiy,
+           population18= ko_ika18y)
 
-``` r
+#Remove the old variables, which were combined
+preprocessed_paavo_data["secondaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_yliop",
+                                  "ko_ammat")])
+preprocessed_paavo_data["tertiaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_al_kork",
+                                 "ko_yl_kork")])
+
+preprocessed_paavo_data <- subset(preprocessed_paavo_data, select=-c(ko_yliop,
+                                                           ko_ammat, ko_al_kork,
+                                                                     ko_yl_kork))
+
+
+
+
 final_data <-
   left_join(summarised_donor_data,
             preprocessed_paavo_data,
@@ -125,7 +145,7 @@ final_data %>%
 
     ## Warning: Removed 21895 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ``` r
 final_data %>% 
@@ -136,7 +156,7 @@ final_data %>%
 
     ## Warning: Removed 21895 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
 final_data %>% 
@@ -152,7 +172,7 @@ final_data %>%
 
     ## Warning: Removed 312 rows containing missing values (geom_bar).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
 final_data %>% 
@@ -162,43 +182,7 @@ final_data %>%
 
     ## Warning: Removed 21895 rows containing missing values (geom_point).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
-
-# educational, living arragements and job-status distributions
-
-``` r
-#add educational data to paavodata and combine the education data to 3 categories: 1) basic level 2) Matriculation examination and vocational diploma, 3) university degree (higher and lower)
-
-preprocessed_paavo_data <- 
-  paavodata %>% 
-    dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi, ko_perus, ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork, pt_tyott, pt_opisk, pt_tyoll, te_omis_as, te_vuok_as) %>% 
-    rename(zip = pono,
-           Year= vuosi,
-           Basiceducation=ko_perus,
-           unemployed = pt_tyott,
-           students = pt_opisk,
-           employed = pt_tyoll,
-           owner_apartment = te_omis_as,
-           rental_apartment = te_vuok_as)
-
-#Remove the old variables, which were combined
-preprocessed_paavo_data["secondaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_yliop",
-                                  "ko_ammat")])
-preprocessed_paavo_data["tertiaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_al_kork",
-                                 "ko_yl_kork")])
-
-preprocessed_paavo_data <- subset(preprocessed_paavo_data, select=-c(ko_yliop,
-                                                                     ko_ammat,
-                                                                     ko_al_kork,
-                                                                     ko_yl_kork))
-
-
-final_data <-
-  left_join(final_data,
-            preprocessed_paavo_data,
-            by = c("zip", "Year")) %>% 
-  filter(Year > 2014)
-```
+![](datavisualisation_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 final_data %>% 
@@ -209,7 +193,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 21896 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
 final_data %>% 
@@ -220,7 +204,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 21896 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 final_data %>% 
@@ -231,7 +215,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 21896 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 # Plotting housing variables
 
@@ -244,7 +228,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 22150 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 final_data  %>% 
@@ -255,7 +239,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 22150 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-12-2.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-10-2.png)<!-- -->
 
 # Plotting main type of activity
 
@@ -268,7 +252,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 22221 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 final_data  %>% 
@@ -279,7 +263,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 22221 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-13-2.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-11-2.png)<!-- -->
 
 ``` r
 final_data  %>% 
@@ -290,7 +274,7 @@ geom_histogram(binwidth = 1000) +
 
     ## Warning: Removed 22032 rows containing non-finite values (stat_bin).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-13-3.png)<!-- -->
+![](datavisualisation_files/figure-gfm/unnamed-chunk-11-3.png)<!-- -->
 
 # summarised by hb
 
@@ -306,19 +290,7 @@ hb_by_zip %>%
 
     ## Warning: Removed 32 rows containing missing values (geom_point).
 
-![](datavisualisation_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
-\# Added gender and deferrals and blood groups to the data + Plotting
-income(db) by gender
-
-``` r
-blood_def_gender <-ilposdata %>% 
-count(gender, Hb_deferral, aborh) %>% 
-inner_join(ilposdata)
-```
-
-    ## Joining, by = c("gender", "Hb_deferral", "aborh")
-
-# First time donors
+![](datavisualisation_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 # correlation matrix and plots
 
