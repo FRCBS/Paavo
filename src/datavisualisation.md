@@ -9,9 +9,7 @@ load("../data/ilposdata.RData")
 
 load("../data/paavodata.RData")
 
-rename(ilposdata, sex= gender
-       
-       )
+rename(ilposdata, sex= gender )
 ```
 
     ## # A tibble: 1,537,680 x 13
@@ -29,6 +27,28 @@ rename(ilposdata, sex= gender
     ## 10 DR00… L3149 2018-10-08 -      K             153 Women AB R… 90530    20
     ## # … with 1,537,670 more rows, and 3 more variables: age.group <fct>,
     ## #   Hb_deferral <fct>, FirstEvent <lgl>
+
+``` r
+rm(aluejakokartat,cc,Data,hoobee_data,nb_donations_data,paavo,paavo_shares,paavo_vars,paavo18,preprocessed_paavo_data,summarised_donor_data,zipcode_maps,api_key,columns_to_mutate,corvallis,file,hb_data,helsinki,i,results,share_column_suffix,sp.vaesto,collapse_names,data,get_geo,map_fi_zipcode,map_fi_zipcode_interactive,order_columns,paavo_aggr,sum_finite,wmean,zip_code_map,fi_commune_number2name)
+```
+
+    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
+    ## object 'hoobee_data' not found
+
+    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
+    ## object 'nb_donations_data' not found
+
+    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
+    ## object 'preprocessed_paavo_data' not found
+
+    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
+    ## object 'summarised_donor_data' not found
+
+    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
+    ## object 'hb_data' not found
+
+    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
+    ## object 'results' not found
 
 # table 1
 
@@ -294,6 +314,8 @@ hb_by_zip %>%
 
 # correlation matrix and plots
 
+\#Paavodata
+
 ``` r
 library("GGally")
 ```
@@ -309,8 +331,285 @@ library("GGally")
     ## 
     ##     nasa
 
-# Compare the income distribution of blood donors to Finnish average distribution
+``` r
+varspaavo <- c("medianincome","averageincome","tertiaryeducation","secondaryeducation","rental_apartment", "employed","unemployed","Basiceducation")
+
+ggpairs(final_data,columns= varspaavo)
+```
+
+    ## Warning: Removed 21895 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21895 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21897 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21897 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22151 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22223 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22223 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21897 rows containing missing values
+
+    ## Warning: Removed 21895 rows containing missing values (geom_point).
+
+    ## Warning: Removed 21895 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21897 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21897 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22151 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22223 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22223 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21897 rows containing missing values
+
+    ## Warning: Removed 21897 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 21897 rows containing missing values (geom_point).
+
+    ## Warning: Removed 21896 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21896 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22151 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22224 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22224 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21896 rows containing missing values
+
+    ## Warning: Removed 21897 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 21897 rows containing missing values (geom_point).
+
+    ## Warning: Removed 21896 rows containing missing values (geom_point).
+
+    ## Warning: Removed 21896 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22151 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22224 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22224 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21896 rows containing missing values
+
+    ## Warning: Removed 22151 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 22151 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 22151 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 22151 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22150 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22288 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22288 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22151 rows containing missing values
+
+    ## Warning: Removed 22223 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 22223 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22224 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 22224 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22288 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22221 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22221 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22224 rows containing missing values
+
+    ## Warning: Removed 22223 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 22223 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22224 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 22224 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22288 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22221 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22221 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22224 rows containing missing values
+
+    ## Warning: Removed 21897 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 21897 rows containing missing values (geom_point).
+
+    ## Warning: Removed 21896 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 21896 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22151 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22224 rows containing missing values (geom_point).
+    
+    ## Warning: Removed 22224 rows containing missing values (geom_point).
+
+    ## Warning: Removed 21896 rows containing non-finite values (stat_density).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+\#correlation matrix with donor data
+
+``` r
+donorvars <- c ("Hb","age","gender","aborh")
+ggpairs(ilposdata, columns= donorvars)
+```
+
+    ## Warning: Removed 53363 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 53363 rows containing missing values
+
+    ## Warning: Removed 53363 rows containing non-finite values (stat_boxplot).
+    
+    ## Warning: Removed 53363 rows containing non-finite values (stat_boxplot).
+
+    ## Warning: Removed 53363 rows containing missing values (geom_point).
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 53363 rows containing non-finite values (stat_bin).
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 53363 rows containing non-finite values (stat_bin).
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+\#ggpairs with both
+datasets
+
+``` r
+varboth <-  c( "mean_hb", "tertiaryeducation","medianincome","unemployed")
+ggpairs(final_data, columns= varboth)
+```
+
+    ## Warning: Removed 32 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21927 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21926 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22252 rows containing missing values
+
+    ## Warning: Removed 21927 rows containing missing values (geom_point).
+
+    ## Warning: Removed 21896 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 21897 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22224 rows containing missing values
+
+    ## Warning: Removed 21926 rows containing missing values (geom_point).
+
+    ## Warning: Removed 21897 rows containing missing values (geom_point).
+
+    ## Warning: Removed 21895 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 22223 rows containing missing values
+
+    ## Warning: Removed 22252 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22224 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22223 rows containing missing values (geom_point).
+
+    ## Warning: Removed 22221 rows containing non-finite values (stat_density).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+# Compare the distribution of blood donors to Finnish average distribution
+
+``` r
+testi1 <- final_data %>% 
+group_by(donor,Year,population18)
+
+ testi1 %>% 
+  ggplot(aes(x=Basiceducation, y=population18)) +
+  geom_jitter(alpha= 0.2)  +
+ facet_grid(Year ~.)
+```
+
+    ## Warning: Removed 21896 rows containing missing values (geom_point).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+``` r
+ testi1 %>% 
+  ggplot(aes(x=tertiaryeducation, y= population18)) +
+ geom_jitter(alpha= 0.2)+ 
+   facet_grid(Year ~.)
+```
+
+    ## Warning: Removed 21896 rows containing missing values (geom_point).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-16-2.png)<!-- -->
+
+``` r
+ testi1 %>% 
+   ggplot(aes(x=secondaryeducation, y=population18)) +
+   geom_jitter (alpha=0.2) +
+   facet_grid(Year ~.)
+```
+
+    ## Warning: Removed 21896 rows containing missing values (geom_point).
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-16-3.png)<!-- -->
 
 # Count division of post codes between mobile and fixed sites. (Calculate the average distance between zip code and donation site for modelling purposes).
 
-# Standard deviation and normal distribution
+# clustering the zip codes
