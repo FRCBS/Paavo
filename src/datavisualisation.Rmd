@@ -1,6 +1,7 @@
 ---
 title: "Data exploration"
 output: github_document
+g
 ---
 
 ```{r setup, include=FALSE}
@@ -45,7 +46,6 @@ results="asis"
 
 You can also embed plots, for example:
 ## Donation data
-
 ```{r pressure, echo=FALSE}
 nb_donations_data <-
   ilposdata %>% 
@@ -248,34 +248,78 @@ ggpairs(final_data, columns= varboth)
 ```
 
 
-
-
-# Compare the  distribution of blood donors to Finnish average distribution
-
+Correlation matrix and  plots on final data with psycho package
 ```{r}
-testi1 <- final_data %>% 
-group_by(donor,Year,population18)
+library(psycho)
+library(tidyverse)
 
- testi1 %>% 
-  ggplot(aes(x=Basiceducation, y=population18)) +
-  geom_jitter(alpha= 0.2)  +
- facet_grid(Year ~.)
  
- testi1 %>% 
-  ggplot(aes(x=tertiaryeducation, y= population18)) +
- geom_jitter(alpha= 0.2)+ 
-   facet_grid(Year ~.)
- 
- testi1 %>% 
-   ggplot(aes(x=secondaryeducation, y=population18)) +
-   geom_jitter (alpha=0.2) +
-   facet_grid(Year ~.)
+cor <- correlation (final_data) 
+
+
+plot(cor)
+summary(cor)
 ```
 
-# Count division of post codes between mobile and fixed sites.  (Calculate the average distance between zip code and donation site for modelling purposes). 
+# Compare the  distribution of blood donors to Finnish average distribution.
+
+
+1) #Divide the number of donors from zipcode by the total number of potential donors
 ```{r}
 
 ```
 
 
-# clustering  the zip codes 
+# Count division of post codes between mobile and fixed sites.  
+```{r}
+
+    Sitedata <- ilposdata %>%
+    mutate(locSim = case_when(
+      Site == "H0091" | Site == "H0092" ~ "Kivihaka",
+      Site == "H0093"  ~ "Sanomatalo",
+      Site == "H0096"  ~ "Espoo",
+      Site == "K0297" ~ "Kuopio",
+      Site == "T0837" ~ "Tampere",
+      Site == "T07343" ~ "Seinäjoki",
+      Site == "T0179" ~ "Jyväskylä",
+      Site == "T0398" ~ "Lahti",
+      Site == "L0564" ~ "Oulu",
+       Site == "U0853" ~ "Turku",
+      TRUE ~ "mobilesite"))
+
+  
+ Sitedata %>% 
+mutate(Year = year(dateonly)) %>% 
+filter(donat_phleb == "K") %>% 
+filter(Year > 2015) %>% 
+count(locSim) 
+ 
+ fixed_donations<- c(27362+29186+34438+24404+31332+28803+71085+48512+52265)
+
+```
+
+ 
+
+
+
+
+ 
+
+
+  
+
+  
+    
+      
+  
+    
+  
+
+  
+  
+
+
+
+ 
+
+

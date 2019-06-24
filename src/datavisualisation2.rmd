@@ -1,0 +1,35 @@
+---
+title: "datavisualisation2"
+output: github_document
+
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+
+library(tidyverse)
+library(lubridate)
+
+```
+
+#5-year donations 
+
+```{r}
+
+```
+
+
+
+
+
+
+# Average yearly count of donations 
+
+
+```{r}
+
+```
+
