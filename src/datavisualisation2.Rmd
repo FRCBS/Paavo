@@ -1,13 +1,15 @@
 ---
 title: "visualisation2"
 output: github_document
-
+  
 ---
-setwd(/home/ilpo/Paavo/src)
+  
+setwd("//home/ilpo/Paavo/src)
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-#load("//ilpo/paavo/data/ilposdata.RData)
+load("../data/ilposdata.RData")
 
 ```
 
