@@ -140,14 +140,7 @@ final_data %>%
   ggplot(aes(x = Year, y = averageincome)) +
   geom_jitter(alpha = 0.2)
 ```
-# income distribution Households belonging to the highes tincome category,Households earning more than EUR 34 550 per year (deciles9-10).Incomecategoriesare formed by usingd eciles.The decile sare forme dby listing all persons included in the dwelling populationC onceptd efinitionin order basedon their equivalentd isposable income and dividing them to ten shares that contain an equal amount of persons.Equivalenti ncome is an income concept by which incomes of households of different typesa remad ecomparable by taking account o  shared consumptionbenefits.Equivalent income=  the household's income divided by the number of consumptionunit s in thehousehohold
-```{r}
-final_data %>%
-group_by(zip,hr_hy_tul) %>% 
-ggplot(aes(x= hr_hy_tul, y= population18))+
-geom_line() +
-facet_grid(Year ~.)
-```
+
 
 
 
@@ -294,8 +287,8 @@ summary(cor)
       Site == "T0398" ~ "Lahti",
       Site == "L0564" ~ "Oulu",
        Site == "U0853" ~ "Turku",
-      TRUE ~ "mobilesite"), 
-      locSim2= ifelse(locSim !="Other","Studysite","Other"))
+      TRUE ~ "mobilesite"))
+      
 
   
  Sitedata %>% 
@@ -310,7 +303,7 @@ count(locSim, Year) %>%
 
 
 ```
-## This part is copied from frcbs github folder. Only difference is that all plots are filtered with year < 2014 and full bloo
+## This part is copied from frcbs github folder. Only difference is that all plots are filtered with year < 2014 and full blood
  
 ```{r}
 lifetime_donation_data<- 
@@ -431,8 +424,7 @@ donations_nb_data %>%
          nrow = 1)
 ```
       
-  
-   #missing donations overall
+  #missing donations overall
 ```{r}
 
 donations_nb_data %>% 
