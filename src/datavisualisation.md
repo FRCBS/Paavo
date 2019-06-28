@@ -752,27 +752,6 @@ any correlation with for example incomes (median or average): do
 zipcodes with a high proportion of blood donors tend tohave high (or
 low) median or mean income. You would make scatterplots to see this.
 
-``` r
-final_data %>% 
-group_by(zip) %>% 
-summarise(zipn=n()) 
-```
-
-    ## # A tibble: 3,247 x 2
-    ##    zip      zipn
-    ##    <chr>   <int>
-    ##  1 "   NA"     1
-    ##  2 00000    1876
-    ##  3 00001     103
-    ##  4 00014       1
-    ##  5 00100    2401
-    ##  6 00101       8
-    ##  7 00120     704
-    ##  8 00130     171
-    ##  9 00140     704
-    ## 10 00150     951
-    ## # … with 3,237 more rows
-
 \#so you would first need to decide what your income groups intervals
 would be ie, 0-10 000 ; 10001-20000,20001-30000, etc then create a new
 variable income group, and for each zip code, give it the right

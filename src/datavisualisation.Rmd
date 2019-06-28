@@ -12,8 +12,6 @@ library(lubridate)
 
 # Loading data
 
-
-
 ```{r ilposdata}
 
 load("../data/ilposdata.RData")
@@ -21,9 +19,30 @@ load("../data/ilposdata.RData")
 
 load("../data/paavodata.RData")
 
-rename(ilposdata, sex= gender )
+rename(ilposdata, sex= gender ) 
 
 rm(aluejakokartat,cc,Data,hoobee_data,nb_donations_data,paavo,paavo_shares,paavo_vars,paavo18,preprocessed_paavo_data,summarised_donor_data,zipcode_maps,api_key,columns_to_mutate,corvallis,file,hb_data,helsinki,i,results,share_column_suffix,sp.vaesto,collapse_names,data,get_geo,map_fi_zipcode,map_fi_zipcode_interactive,order_columns,paavo_aggr,sum_finite,wmean,zip_code_map,fi_commune_number2name)
+ 
+ ilposdata %>% mutate(zip = recode(zip,
+                            "106001" = "10600",
+                            "201001" = "20100",
+                            "216001"=  "21600",
+                            "257001" = "25710", 
+                             "27001" = "27100",
+                             "41301"= "41310" ,
+                             "61001"="61100",
+                             "651001"= "61100",
+                             "669001"="66900",
+                             "685001" = "68500",
+                             "686001"= "68600",
+                             "686201"= "68620",
+                             "651001"= "06500",
+                             "651001" = "65100",
+                             "652001" = "65200",
+                              "669001"= "66900",
+                              "686001" = "68600",
+                              "688001" = "68600", 
+                               "688001" = "68600")) 
 
 ```
 
@@ -74,7 +93,7 @@ nb_donations_data <-
 ```{r}
 preprocessed_paavo_data <- 
   paavodata %>% 
-    dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi, ko_perus, ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork, pt_tyott, pt_opisk, pt_tyoll, te_omis_as, te_vuok_as,he_vakiy, ko_ika18y,hr_pi_tul,hr_ke_tul,hr_hy_tul,) %>% 
+    dplyr::select(pono, vuosi, hr_mtu, hr_ktu,nimi, ko_perus, ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork, pt_tyott, pt_opisk, pt_tyoll, te_omis_as, te_vuok_as,he_vakiy, ko_ika18y) %>% 
     rename(zip = pono,
            Year= vuosi,
            Basiceducation=ko_perus,
@@ -86,10 +105,7 @@ preprocessed_paavo_data <-
            medianincome= hr_mtu,
            averageincome= hr_ktu,
            population= he_vakiy,
-           population18= ko_ika18y,
-           lowestincome= hr_pi_tul,
-           middleincome=hr_ke_tul,
-            )
+           population18= ko_ika18y)
 
 #Remove the old variables, which were combined
 preprocessed_paavo_data["secondaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_yliop",
@@ -239,6 +255,7 @@ ggpairs(final_data,columns= varspaavo)
 #correlation matrix with donor data 
 
 ```{r}
+library(GGally)
 donorvars <- c ("Hb","age","gender","aborh")
 ggpairs(ilposdata, columns= donorvars)
 ```
@@ -253,7 +270,6 @@ ggpairs(final_data, columns= varboth)
 Correlation matrix and  plots on final data with psycho package
 ```{r}
 library(psycho)
-library(tidyverse)
 
  
 cor <- correlation (final_data) 
@@ -263,12 +279,7 @@ plot(cor)
 summary(cor)
 ```
 
-# Compare the  distribution of blood donors to Finnish average distribution.
 
-
-```{r}
-
-```
 
 
 # Count division of post codes between mobile and fixed sites.  
@@ -286,14 +297,15 @@ summary(cor)
       Site == "T0398" ~ "Lahti",
       Site == "L0564" ~ "Oulu",
        Site == "U0853" ~ "Turku",
-      TRUE ~ "mobilesite"))
+      TRUE ~ "mobilesite")) %>% 
+      summarise(fixedsite 
       
 
   
  Sitedata %>% 
 mutate(Year = year(dateonly)) %>% 
 filter(donat_phleb == "K") %>% 
-filter(Year > 2015) %>% 
+filter(Year > 2014) %>% 
 count(locSim, Year) 
 
    
@@ -305,5 +317,67 @@ count(locSim, Year)
 
 
  
+```{r}
 
+prop_donor <- ilposdata %>% 
+  mutate(Year = year(dateonly)) %>% 
+  filter(donat_phleb == "K") %>% 
+    count(donor, Year,zip) %>% 
+    count(Year, zip) %>% 
+    filter(Year == 2017 | Year == 2018) %>%
+    rename(nb_donors = n)
+
+prop_paavo <- paavodata %>% 
+  rename(zip = pono, Year= vuosi) %>%   
+  filter(Year == 2019) %>% 
+  mutate(eligible_population = he_18_19+ he_20_24+ he_25_29+ he_30_34+ he_40_44+
+                                  he_45_49+ he_50_54+ he_55_59+ he_60_64+ he_65_69) %>% 
+  dplyr::select(-Year) %>% 
+  full_join(prop_donor,by = c("zip")) %>% 
+  dplyr::select(zip, Year, eligible_population, nb_donors, hr_mtu, hr_ktu,nimi, ko_perus, 
+                ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork, pt_tyott, pt_opisk, pt_tyoll,
+                te_omis_as, te_vuok_as,he_vakiy,  ko_ika18y, hr_tuy) %>% 
+    rename(Basiceducation=ko_perus,
+           unemployed = pt_tyott,
+           students = pt_opisk,
+           employed = pt_tyoll,
+           owner_apartment = te_omis_as,
+           rental_apartment = te_vuok_as,
+           medianincome= hr_mtu,
+           averageincome= hr_ktu,
+           population= he_vakiy,
+           population18= ko_ika18y)%>%
+mutate(prop_donor= nb_donors/eligible_population, 
+      prop_basic=Basiceducation/hr_tuy)
+
+
+
+#lets look at  missing values after recoding few zips 
+#prop_paavo %>% filter(is.na(eligible_population)) %>% summarise(total = sum(nb_donors, na.rm = TRUE))
+#  total=   8884
+
+```
+ 
+```{r}
+prop_paavo %>% 
+  filter(prop_basic <= 1) %>% 
+  ggplot(aes(x = prop_donor, y = prop_basic)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(Year ~.)
+
+
+
+```
+ 
+ 
+```{r}
+prop_paavo %>% 
+  filter(prop_basic > 1)
+```
+ 
+
+
+```{r}
+
+```
 
