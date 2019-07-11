@@ -1,0 +1,100 @@
+---
+title: "Visualisation"
+output: github_document
+---
+
+```{r}
+load("/home/ilpo/Paavo/data/preprocessed.RData")
+```
+
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+```{r}
+setwd(dir="/home/ilpo/Paavo/src")
+getwd()
+
+```
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+
+library(tidyverse)
+library(lubridate)
+
+```
+
+
+
+
+# Is there a relationship of income and proportion of donors in the population? 
+filtering prop_donors smaller than 1 and took common logarithm 
+```{r}
+preprosessed_paavo %>% 
+filter(prop_donors<=1) %>% 
+ggplot(aes(x = averageincome, y= prop_donors)) +
+geom_point(alpha = 0.25) +
+scale_x_log10() +
+facet_grid(Year~.)
+```
+
+# basic for averageincome and proportion of donors. 
+```{r}
+preprosessed_paavo %>% 
+ggplot(aes( x= averageincome, y= prop_donors))+
+geom_point()+
+facet_grid(Year~.)
+```
+# basic plot for median. 
+```{r}
+preprosessed_paavo %>% 
+ggplot(aes(y= prop_donors, x= medianincome)) +
+geom_point() + 
+facet_grid(Year~.)
+```
+
+#Logarithm and filtering. 
+
+```{r}
+preprosessed_paavo %>% 
+filter(prop_donors<=1) %>% 
+ggplot(aes(y = prop_donors, x = medianincome)) +
+geom_point(alpha = 0.25) +
+scale_x_log10() +
+facet_grid(Year ~.)
+```
+
+
+
+
+same plot separately for first time donors and others
+
+
+
+
+
+
+ Is there a relationship between proportion of people with higher education and proportion of donors in the population? 
+ 
+  a. Scatter plot Y= proportion of donors in a zip code X = proportion inhabitants with higher education
+        
+```{r}
+preprosessed_paavo %>% 
+ggplot(aes( x= proportion_inhabitants_with_higher_education, y= nb_donation_per_act_donor)) + 
+geom_count()+
+facet_grid(Year~.)
+```
+        
+        b,Same plot separately for first time donors and others
+```{r}
+
+```
+

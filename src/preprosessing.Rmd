@@ -113,7 +113,9 @@ pt_tyott, pt_tyoll,  ko_ika18y, hr_tuy) %>%
            averageincome= hr_ktu,
            population18= ko_ika18y,
            bachelor_degree= ko_al_kork,
-           masters_degree= ko_yl_kork) %>% 
+           masters_degree= ko_yl_kork,
+          averageincome= hr_ktu,
+          medianincome= hr_mtu) %>% 
 mutate( prop_donors= nb_donors_per_zip/eligible_population,
         nb_donation_per_act_donor= nb_donations_per_zip/nb_donors_per_zip,
         prop_new_donors= nb_first_time_donors/eligible_population,
