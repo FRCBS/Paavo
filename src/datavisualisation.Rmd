@@ -107,7 +107,7 @@ preprocessed_paavo_data <-
            population= he_vakiy,
            population18= ko_ika18y)
 
-#Remove the old variables, which were combined
+
 preprocessed_paavo_data["secondaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_yliop",
                                   "ko_ammat")])
 preprocessed_paavo_data["tertiaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_al_kork",
@@ -297,8 +297,7 @@ summary(cor)
       Site == "T0398" ~ "Lahti",
       Site == "L0564" ~ "Oulu",
        Site == "U0853" ~ "Turku",
-      TRUE ~ "mobilesite")) %>% 
-      summarise(fixedsite 
+      TRUE ~ "mobilesite")) 
       
 
   
@@ -346,15 +345,19 @@ prop_paavo <- paavodata %>%
            medianincome= hr_mtu,
            averageincome= hr_ktu,
            population= he_vakiy,
-           population18= ko_ika18y)%>%
+           population18= ko_ika18y) %>% 
 mutate(prop_donor= nb_donors/eligible_population, 
-      prop_basic=Basiceducation/hr_tuy)
+      prop_basic=Basiceducation/hr_tuy,
+      prop_bachelor= ko_al_kork/hr_tuy,
+      prop_tertiary= ko_yl_kork/hr_tuy,
+      prop_unemployed= unemployed/hr_tuy,
+      prop_rent= rental_apartment/hr_tuy,
+      prop_ownerapartment= owner_apartment/hr_tuy,
+      ) %>% 
+  na.omit(prop_paavo, cols = c("elligible_population"))
+   
+      
 
-
-
-#lets look at  missing values after recoding few zips 
-#prop_paavo %>% filter(is.na(eligible_population)) %>% summarise(total = sum(nb_donors, na.rm = TRUE))
-#  total=   8884
 
 ```
  
@@ -365,17 +368,58 @@ prop_paavo %>%
   geom_point(alpha = 0.25) +
   facet_grid(Year ~.)
 
-
+ 
 
 ```
  
  
 ```{r}
-prop_paavo %>% 
-  filter(prop_basic > 1)
+  prop_paavo %>% 
+  filter(prop_tertiary <= 1) %>% 
+  ggplot(aes(x = prop_donor, y = prop_tertiary)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(Year ~.)
+
 ```
  
 
+
+```{r}
+  prop_paavo %>% 
+  filter(prop_bachelor <= 1) %>% 
+  ggplot(aes(x = prop_donor, y = prop_bachelor)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(Year ~.)
+```
+#housing
+
+```{r}
+prop_paavo %>% 
+  filter(prop_rent<= 1) %>% 
+  ggplot(aes(x = prop_donor, y = prop_rent)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(Year ~.)
+   
+
+```
+
+```{r}
+prop_paavo %>% 
+  filter(prop_ownerapartment<= 1) %>% 
+  ggplot(aes(x = prop_donor, y = prop_ownerapartment)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(Year ~.)
+   
+
+```
+```{r}
+prop_paavo %>%  filter(prop_unemployed<= 1) %>%
+  ggplot(aes(x = prop_donor, y = prop_unemployed)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(Year ~.)
+   
+
+```
 
 ```{r}
 

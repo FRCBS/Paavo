@@ -9,7 +9,7 @@ load("../data/ilposdata.RData")
 
 load("../data/paavodata.RData")
 
-rename(ilposdata, sex= gender )
+rename(ilposdata, sex= gender ) 
 ```
 
     ## # A tibble: 1,537,680 x 13
@@ -49,6 +49,45 @@ rm(aluejakokartat,cc,Data,hoobee_data,nb_donations_data,paavo,paavo_shares,paavo
 
     ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
     ## object 'results' not found
+
+``` r
+ ilposdata %>% mutate(zip = recode(zip,
+                            "106001" = "10600",
+                            "201001" = "20100",
+                            "216001"=  "21600",
+                            "257001" = "25710", 
+                             "27001" = "27100",
+                             "41301"= "41310" ,
+                             "61001"="61100",
+                             "651001"= "61100",
+                             "669001"="66900",
+                             "685001" = "68500",
+                             "686001"= "68600",
+                             "686201"= "68620",
+                             "651001"= "06500",
+                             "651001" = "65100",
+                             "652001" = "65200",
+                              "669001"= "66900",
+                              "686001" = "68600",
+                              "688001" = "68600", 
+                               "688001" = "68600")) 
+```
+
+    ## # A tibble: 1,537,680 x 13
+    ##    donor Site  dateonly   status donat_phleb    Hb gender aborh zip     age
+    ##    <fct> <fct> <date>     <fct>  <fct>       <dbl> <fct>  <fct> <fct> <int>
+    ##  1 DR00… L3149 2018-10-08 -      K             141 Women  A Rh… 90570    19
+    ##  2 DR00… L3149 2018-10-08 -      K             156 Men    O Rh… 90530    21
+    ##  3 DR00… L3149 2018-10-08 -      K             156 Men    A Rh… 90560    22
+    ##  4 DR00… L0564 2019-01-17 -      K             163 Men    A Rh… 90560    22
+    ##  5 DR00… L3149 2018-10-08 R      K             127 Women  A Rh… 90570    20
+    ##  6 DR00… L3149 2019-01-14 E      *             138 Women  A Rh… 90570    20
+    ##  7 DR00… L3149 2018-10-08 E      *             144 Women  ""    90550    19
+    ##  8 DR00… L3149 2018-10-08 -      K             140 Women  O Rh… 90530    21
+    ##  9 DR00… L3149 2018-10-08 -      K             128 Women  B Rh… 90500    19
+    ## 10 DR00… L3149 2018-10-08 -      K             153 Women  AB R… 90530    20
+    ## # … with 1,537,670 more rows, and 3 more variables: age.group <fct>,
+    ## #   Hb_deferral <fct>, FirstEvent <lgl>
 
 # table 1
 
@@ -154,7 +193,7 @@ preprocessed_paavo_data <-
            population= he_vakiy,
            population18= ko_ika18y)
 
-#Remove the old variables, which were combined
+
 preprocessed_paavo_data["secondaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_yliop",
                                   "ko_ammat")])
 preprocessed_paavo_data["tertiaryeducation"] <- rowSums(preprocessed_paavo_data[c("ko_al_kork",
@@ -714,57 +753,135 @@ summary(cor)
       Site == "T0398" ~ "Lahti",
       Site == "L0564" ~ "Oulu",
        Site == "U0853" ~ "Turku",
-      TRUE ~ "mobilesite"))
+      TRUE ~ "mobilesite")) 
       
 
   
  Sitedata %>% 
 mutate(Year = year(dateonly)) %>% 
 filter(donat_phleb == "K") %>% 
-filter(Year > 2015) %>% 
+filter(Year > 2014) %>% 
 count(locSim, Year) 
 ```
 
-    ## # A tibble: 40 x 3
+    ## # A tibble: 50 x 3
     ##    locSim     Year     n
     ##    <chr>     <dbl> <int>
-    ##  1 Espoo      2016  7152
-    ##  2 Espoo      2017  7721
-    ##  3 Espoo      2018  8892
-    ##  4 Espoo      2019  3597
-    ##  5 Jyväskylä  2016  8711
-    ##  6 Jyväskylä  2017  8642
-    ##  7 Jyväskylä  2018  8461
-    ##  8 Jyväskylä  2019  3372
-    ##  9 Kivihaka   2016 10139
-    ## 10 Kivihaka   2017 10354
-    ## # … with 30 more rows
+    ##  1 Espoo      2015  7265
+    ##  2 Espoo      2016  7152
+    ##  3 Espoo      2017  7721
+    ##  4 Espoo      2018  8892
+    ##  5 Espoo      2019  3597
+    ##  6 Jyväskylä  2015  8676
+    ##  7 Jyväskylä  2016  8711
+    ##  8 Jyväskylä  2017  8642
+    ##  9 Jyväskylä  2018  8461
+    ## 10 Jyväskylä  2019  3372
+    ## # … with 40 more rows
 
 ``` r
  # make a new variable (fixedsites or plot without mobilesites)
 ```
 
-\# As in for each zipcode, divide the number of donors from that zipcode
-by the total number of potential donors from that zipcode (men and women
-between ages 18-70). So now for each zipcode you have a proportion of
-the population that donates.Then you could see if this proportion has
-any correlation with for example incomes (median or average): do
-zipcodes with a high proportion of blood donors tend tohave high (or
-low) median or mean income. You would make scatterplots to see this.
+``` r
+prop_donor <- ilposdata %>% 
+  mutate(Year = year(dateonly)) %>% 
+  filter(donat_phleb == "K") %>% 
+    count(donor, Year,zip) %>% 
+    count(Year, zip) %>% 
+    filter(Year == 2017 | Year == 2018) %>%
+    rename(nb_donors = n)
 
-\#so you would first need to decide what your income groups intervals
-would be ie, 0-10 000 ; 10001-20000,20001-30000, etc then create a new
-variable income group, and for each zip code, give it the right
-income-group value according to its mean or median income so then you
-would have for each zip code the income\_group and the nb of donors for
-donor data and then each zip code the income\_group and the nb of
-inhabitants. then you can make a “distribution” of income in either
-group by grouping by income\_group and adding the number of people in
-that income group across zip\_codes. FOr the donor population you would
-add nb\_donors (you need to have the nb of donors per zip\_code already
-computed) using a summarize(result= sum(nb\_donors)) and then for the
-total population you need to. For the total population you can do the
-same thing but add the over18 population. Then for each income\_group,
-you should have the total nb of donors in one case and the total number
-of people n the other case then you can plot something like ggplot(aes(x
-= income\_group, y = total\_donors)) + geom\_col()
+prop_paavo <- paavodata %>% 
+  rename(zip = pono, Year= vuosi) %>%   
+  filter(Year == 2019) %>% 
+  mutate(eligible_population = he_18_19+ he_20_24+ he_25_29+ he_30_34+ he_40_44+
+                                  he_45_49+ he_50_54+ he_55_59+ he_60_64+ he_65_69) %>% 
+  dplyr::select(-Year) %>% 
+  full_join(prop_donor,by = c("zip")) %>% 
+  dplyr::select(zip, Year, eligible_population, nb_donors, hr_mtu, hr_ktu,nimi, ko_perus, 
+                ko_yliop, ko_ammat, ko_al_kork, ko_yl_kork, pt_tyott, pt_opisk, pt_tyoll,
+                te_omis_as, te_vuok_as,he_vakiy,  ko_ika18y, hr_tuy) %>% 
+    rename(Basiceducation=ko_perus,
+           unemployed = pt_tyott,
+           students = pt_opisk,
+           employed = pt_tyoll,
+           owner_apartment = te_omis_as,
+           rental_apartment = te_vuok_as,
+           medianincome= hr_mtu,
+           averageincome= hr_ktu,
+           population= he_vakiy,
+           population18= ko_ika18y) %>% 
+mutate(prop_donor= nb_donors/eligible_population, 
+      prop_basic=Basiceducation/hr_tuy,
+      prop_bachelor= ko_al_kork/hr_tuy,
+      prop_tertiary= ko_yl_kork/hr_tuy,
+      prop_unemployed= unemployed/hr_tuy,
+      prop_rent= rental_apartment/hr_tuy,
+      prop_ownerapartment= owner_apartment/hr_tuy,
+      ) %>% 
+  na.omit(prop_paavo, cols = c("elligible_population"))
+```
+
+    ## Warning: Column `zip` joining character vector and factor, coercing into
+    ## character vector
+
+``` r
+prop_paavo %>% 
+  filter(prop_basic <= 1) %>% 
+  ggplot(aes(x = prop_donor, y = prop_basic)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(Year ~.)
+```
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+``` r
+  prop_paavo %>% 
+  filter(prop_tertiary <= 1) %>% 
+  ggplot(aes(x = prop_donor, y = prop_tertiary)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(Year ~.)
+```
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+``` r
+  prop_paavo %>% 
+  filter(prop_bachelor <= 1) %>% 
+  ggplot(aes(x = prop_donor, y = prop_bachelor)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(Year ~.)
+```
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+\#housing
+
+``` r
+prop_paavo %>% 
+  filter(prop_rent<= 1) %>% 
+  ggplot(aes(x = prop_donor, y = prop_rent)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(Year ~.)
+```
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+
+``` r
+prop_paavo %>% 
+  filter(prop_ownerapartment<= 1) %>% 
+  ggplot(aes(x = prop_donor, y = prop_ownerapartment)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(Year ~.)
+```
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+``` r
+prop_paavo %>%  filter(prop_unemployed<= 1) %>%
+  ggplot(aes(x = prop_donor, y = prop_unemployed)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(Year ~.)
+```
+
+![](datavisualisation_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
