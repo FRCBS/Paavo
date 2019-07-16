@@ -1,4 +1,4 @@
-  source(here::here("functions.R"))
+source(here::here("functions.R"))
 
 # Paavo-data (Zip code demographics data)
 Data <- bind_rows(get_geo("postialue:pno_tilasto_2019", get_geometry = FALSE),

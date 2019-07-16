@@ -124,12 +124,15 @@ facet_grid(Year~.)
 preprosessed_paavo %>% 
 ggplot(aes( x= proportion_inhabitants_with_higher_education, y= nb_donation_per_act_donor)) + 
 geom_point(shape=1, ) + 
-geom_smooth(method=loess)
+geom_smooth(method="loess")
 
 ```
  
+ b,Same plot separately for first time donors and others
  
+ ,
+ # creating a variable wich groups repeat donors and first time donors in under the same variable so I can ggplot aes x,y=, group= keksittymuuttuja)  and present them in the same plot. 
 
- 
-        b,Same plot separately for first time donors and others
+
+
 

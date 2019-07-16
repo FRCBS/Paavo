@@ -6,53 +6,32 @@ setwd(dir ="/home/ilpo/Paavo/src")
 ```
 
 ``` r
-load("../data/paavodata.RData")
-load("../data/ilposdata.RData")
+load("../data/paavodata.rdata")
+load("../data/ilposdata.rdata")
 ```
-
-``` r
-rm(aluejakokartat,cc,Data,hoobee_data,nb_donations_data,paavo,paavo_shares,paavo_vars,paavo18,preprocessed_paavo_data,summarised_donor_data,zipcode_maps,api_key,columns_to_mutate,corvallis,file,hb_data,helsinki,i,results,share_column_suffix,sp.vaesto,collapse_names,data,get_geo,map_fi_zipcode,map_fi_zipcode_interactive,order_columns,paavo_vars_shares,paavo_aggr,sum_finite,wmean,zip_code_map,fi_commune_number2name,donations_data)
-```
-
-    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
-    ## object 'hoobee_data' not found
-
-    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
-    ## object 'nb_donations_data' not found
-
-    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
-    ## object 'preprocessed_paavo_data' not found
-
-    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
-    ## object 'summarised_donor_data' not found
-
-    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
-    ## object 'hb_data' not found
-
-    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
-    ## object 'results' not found
-
-    ## Warning in rm(aluejakokartat, cc, Data, hoobee_data, nb_donations_data, :
-    ## object 'donations_data' not found
 
 # Numbers of donors per zip and number of donations per zip
 
 ``` r
+ilposdata$zip <- gsub('.*NA.*',NA,ilposdata$zip)
+
 prepocessing <- ilposdata %>% 
   mutate(Year = year(dateonly)) %>% 
-  filter(donat_phleb == "K") %>% 
+#  filter(donat_phleb == "K") %>% 
     count(donor, Year,zip) %>% 
     count(Year, zip) %>% 
     filter(Year == 2017 | Year == 2018) %>%
     rename(nb_donors_per_zip = n) 
 ```
 
+# 
+
 ``` r
 test <-ilposdata %>% 
   mutate(Year = year(dateonly)) %>%  
-  filter(donat_phleb == "K") %>% 
+#  filter(donat_phleb == "K") %>% 
 filter(Year == 2017| Year== 2018) %>% 
-count(zip) %>% 
+count(Year,zip) %>% 
 rename(nb_donations_per_zip=n) 
 ```
 
@@ -61,7 +40,7 @@ rename(nb_donations_per_zip=n)
   by = c("zip"))
 ```
 
-\#nb\_first\_time\_donors & nb\_repeat\_donors
+\#nb\_first\_time\_donors
 
 ``` r
 firstevent <- ilposdata %>% 
@@ -74,23 +53,30 @@ group_by(zip) %>%
 summarise(nb_first_time_donors= n()) 
 ```
 
-``` r
-repeatedevent <- ilposdata %>% 
- mutate(Year = year(dateonly)) %>%  
-  filter(donat_phleb == "K") %>% 
-filter(Year == 2017| Year== 2018) %>% 
-select(zip,FirstEvent) %>% 
-filter(FirstEvent== FALSE) %>% 
-group_by(zip) %>% 
-summarise(nb_repeat_donors=n())
+\#nb\_repeat\_donors
 
+``` r
+repeatedevent <- ilposdata %>%
+ mutate(Year = year(dateonly)) %>%
+ filter(Year == 2017| Year== 2018) %>%
+ select(zip,donor, Year) %>% 
+ group_by(donor) %>%
+ filter(n() >= 2) %>% 
+  ungroup() %>% 
+group_by(zip )%>% 
+  distinct(donor) %>% 
+summarise(nb_repeat_donors= n())
+```
+
+``` r
 events <- left_join(firstevent,repeatedevent,
 by = c("zip"))
 ```
 
 ``` r
 preprocessed <- left_join(preprosessing ,events,
-  by = c("zip"))
+  by = c("zip")) %>% 
+  rename(Year= Year.y)
 ```
 
 # \#joining the data with Paavodata
@@ -122,5 +108,6 @@ mutate( prop_donors= nb_donors_per_zip/eligible_population,
   proportion_inhabitants_with_higher_education= higher_education/eligible_population)
 ```
 
-    ## Warning: Column `zip` joining character vector and factor, coercing into
-    ## character vector
+``` r
+save(preprosessed_paavo, file = "preprocessed.RData") 
+```
