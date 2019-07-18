@@ -37,7 +37,7 @@ rename(nb_donations_per_zip=n)
 
 ``` r
   preprosessing <-left_join(prepocessing,test,
-  by = c("zip"))
+  by = c("zip", "Year"))
 ```
 
 \#nb\_first\_time\_donors
@@ -47,10 +47,11 @@ firstevent <- ilposdata %>%
  mutate(Year = year(dateonly)) %>%  
   filter(donat_phleb == "K") %>% 
 filter(Year == 2017| Year== 2018) %>% 
-select(zip,FirstEvent) %>% 
+select(zip,FirstEvent,Year) %>% 
 filter(FirstEvent == TRUE) %>% 
-group_by(zip) %>% 
-summarise(nb_first_time_donors= n()) 
+group_by(zip,Year) %>% 
+summarise(nb_first_time_donors= n()) %>% 
+ungroup()
 ```
 
 \#nb\_repeat\_donors
@@ -58,25 +59,24 @@ summarise(nb_first_time_donors= n())
 ``` r
 repeatedevent <- ilposdata %>%
  mutate(Year = year(dateonly)) %>%
- filter(Year == 2017| Year== 2018) %>%
- select(zip,donor, Year) %>% 
- group_by(donor) %>%
- filter(n() >= 2) %>% 
-  ungroup() %>% 
-group_by(zip )%>% 
-  distinct(donor) %>% 
-summarise(nb_repeat_donors= n())
+ filter(Year == 2017| Year== 2018) %>% 
+ filter(donat_phleb == "K") %>% 
+ group_by(donor, Year) %>% #
+filter(dateonly == min(dateonly)) %>% 
+ filter(FirstEvent == FALSE) %>%  
+ ungroup() %>%
+count(zip, Year) %>%  
+  rename(nb_repeat_donors= n)
 ```
 
 ``` r
 events <- left_join(firstevent,repeatedevent,
-by = c("zip"))
+by = c("zip","Year"))
 ```
 
 ``` r
 preprocessed <- left_join(preprosessing ,events,
-  by = c("zip")) %>% 
-  rename(Year= Year.y)
+  by = c("zip", "Year"))
 ```
 
 # \#joining the data with Paavodata
