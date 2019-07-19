@@ -26,6 +26,7 @@ library(lubridate)
 # Numbers of donors per zip and number of donations per zip
 ```{r}
 ilposdata$zip <- gsub('.*NA.*',NA,ilposdata$zip)
+ilposdata$Year <- gsub('.*NA.*',NA,ilposYear)
 
 prepocessing <- ilposdata %>% 
   mutate(Year = year(dateonly)) %>% 

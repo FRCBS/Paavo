@@ -55,38 +55,26 @@ library(lubridate)
     ## 
     ##     date
 
-# Is there a relationship of income and proportion of donors in the population?
-
 filtering prop\_donors smaller than 1 and took common logarithm
 
 ``` r
 preprosessed_paavo %>% 
 filter(prop_donors<=1) %>% 
-ggplot(aes(x = averageincome, y= prop_donors)) +
+ggplot(aes(x = averageincome, y= prop_donors, color=prop_donors)) +
 geom_point(alpha = 0.25) +
+geom_smooth(method=lm) +
 scale_x_log10()  +
-facet_grid(Year~.) +
+#facet_grid(Year~.) +
 labs(x = "Average income",
          y = "Proportion of donors",
          title = "Proportion of donors per average income")
 ```
 
+    ## Warning: Removed 6 rows containing non-finite values (stat_smooth).
+
     ## Warning: Removed 6 rows containing missing values (geom_point).
 
 ![](visualisation_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
-
-# basic plot for median.
-
-``` r
-preprosessed_paavo %>% 
-ggplot(aes(y= prop_donors, x= medianincome)) +
-geom_point() + 
-facet_grid(Year~.)
-```
-
-    ## Warning: Removed 1970 rows containing missing values (geom_point).
-
-![](visualisation_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 \#Logarithm and filtering.
 
@@ -105,47 +93,63 @@ facet_grid(Year ~.)
 
     ## Warning: Removed 6 rows containing missing values (geom_point).
 
-![](visualisation_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](visualisation_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+preprosessed_paavo %>% 
+filter(prop_donors<=1) %>% 
+ggplot(aes(y = prop_donors, x = medianincome, color=prop_donors)) +
+geom_point(alpha = 0.25) +
+scale_x_log10() +
+geom_smooth (method=lm, se=FALSE) +
+labs(x = "Median income",
+         y = "Proportion of donors",
+         title = "Proportion of donors per median income of postal codes")
+```
+
+    ## Warning: Removed 6 rows containing non-finite values (stat_smooth).
+
+    ## Warning: Removed 6 rows containing missing values (geom_point).
+
+![](visualisation_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+``` r
+#facet_grid(Year ~.)
+```
 
 ``` r
 preprosessed_paavo %>%  
 filter(proportion_inhabitants_with_higher_education <= 1) %>% 
 ggplot(aes(x=proportion_inhabitants_with_higher_education, y=  prop_donors, color= prop_donors)) +
-geom_jitter(alpha= 0.25)+
-geom_smooth()+
+geom_jitter(alpha= 0.4)+
+geom_smooth(method=lm)+
 labs(x = "Proportion of inhabitants with higher education",
          y = "Proportion of donors",
-         title = "Proportion of donors per proportion of people with university degree")
+         title = "Proportion of donors per proportion of people with university degree") 
 ```
-
-    ## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
 
     ## Warning: Removed 1164 rows containing non-finite values (stat_smooth).
 
     ## Warning: Removed 1164 rows containing missing values (geom_point).
 
-![](visualisation_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](visualisation_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
-#acet_grid (Year~.)
+#facet_grid (Year~.)
 ```
-
-\`
 
 Is there a relationship between proportion of people with higher
 education and proportion of donors in the population?
 
 ``` r
 preprosessed_paavo %>% 
-ggplot(aes(x=proportion_inhabitants_with_higher_education, y= prop_donors))+
+ggplot(aes(x =  proportion_inhabitants_with_higher_education, y = prop_repeat_donors, col= prop_repeat_donors))+
 geom_point() +
-facet_grid(Year~.)
+geom_smooth (method=lm)
 ```
 
-    ## Warning: Removed 1970 rows containing missing values (geom_point).
+    ## Warning: Removed 4115 rows containing non-finite values (stat_smooth).
 
-![](visualisation_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+    ## Warning: Removed 4115 rows containing missing values (geom_point).
 
-b,Same plot separately for first time donors and others
-
-,
+![](visualisation_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
