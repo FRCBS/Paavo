@@ -3,10 +3,11 @@ title: "Preprocessing"
 output: github_document
 ---
 ```{r}
-setwd(dir ="/home/ilpo/Paavo/src")
+#echo "rmarkdown::render('preprosessing.Rmd', clean=TRUE,output_format='pdf_document',output_file='preprosessing_20190724.pdf')" | R --slave
+#setwd(dir ="/home/ilpo/Paavo/src")
 ```
 
-```{r}
+```{r loaddata}
 load("../data/paavodata.rdata")
 load("../data/ilposdata.rdata")
 ```
@@ -24,7 +25,7 @@ library(lubridate)
 
 
 
-```{r}
+```{r fixzipcodes}
 ilposdata %>% mutate(zip = recode(zip,
                             #old value = new value
                             "106001" = "10600",
@@ -46,36 +47,40 @@ ilposdata %>% mutate(zip = recode(zip,
                               "686001" = "68600",
                               "688001" = "68600", 
                                "688001" = "68600")) 
+
+ilposdata$zip <- gsub('.*NA.*',NA,ilposdata$zip)
+ilposdata <- ilposdata %>% filter(!is.na(zip))
+
+
 ```
 
 
 # Numbers of donors per zip and number of donations per zip
-```{r}
+```{r  nb_donors_per_zip}
 
-ilposdata$zip <- gsub('.*NA.*',NA,ilposdata$zip)
 
 prepocessing <- ilposdata %>% 
   mutate(Year = year(dateonly)) %>% 
-#  filter(donat_phleb == "K") %>% 
+  filter(donat_phleb == "K") %>% 
+  filter(Year == 2017 | Year == 2018) %>%
     count(donor, Year,zip) %>% 
     count(Year, zip) %>% 
-    filter(Year == 2017 | Year == 2018) %>%
-    rename(nb_donors_per_zip = n) 
+    rename(nb_donors_per_zip = nn) 
 
-
+ilposdata %>% filter(zip == '00120') %>%  filter(donat_phleb == "K") %>% mutate(year=year(dateonly)) %>% filter(year=='2017') %>% group_by(donor) %>% count()
 
 ```
 
 # 
-```{r}
+```{r  nb_donations_per_zip}
 test <-ilposdata %>% 
   mutate(Year = year(dateonly)) %>%  
-#  filter(donat_phleb == "K") %>% 
+  filter(donat_phleb == "K") %>% 
 filter(Year == 2017| Year== 2018) %>% 
 count(Year,zip) %>% 
 rename(nb_donations_per_zip=n) 
 
-
+ilposdata %>% filter(zip == '00120') %>%  filter(donat_phleb == "K") %>% mutate(year=year(dateonly)) %>% filter(year=='2017') %>% count()
   
 ```
 
@@ -99,51 +104,60 @@ filter(FirstEvent == TRUE) %>%
 group_by(zip,Year) %>% 
 summarise(nb_first_time_donors= n()) %>% 
 ungroup()
+
+ilposdata %>% filter(zip == '00120') %>%  filter(donat_phleb == "K") %>% filter(FirstEvent== TRUE) %>% mutate(year=year(dateonly)) %>% filter(year=='2017') %>% count()
+
 ```
 
  #nb_repeat_donors
 ```{r}
 
-repeatedevent <- ilposdata %>%
- mutate(Year = year(dateonly)) %>%
- filter(Year == 2017| Year== 2018) %>% 
- filter(donat_phleb == "K") %>% filter(FirstEvent == FALSE)
- 
-repeatedevent <- repeatedevent %>%  group_by(donor, Year) %>% 
- filter(dateonly == min(dateonly))  
- 
+# repeatedevent <- ilposdata %>%
+#  mutate(Year = year(dateonly)) %>%
+#  filter(Year == 2017| Year== 2018) %>% 
+#  filter(donat_phleb == "K") %>% 
+#   filter(FirstEvent == FALSE)
+#  
+# repeatedevent <- repeatedevent %>%  group_by(donor, Year) %>% 
+#  filter(dateonly == min(dateonly))  
+#  
+# 
+# repeatedevent <- repeatedevent %>%  ungroup() %>%
+# count(zip, Year) %>%  
+#   rename(nb_repeat_donors= n)
 
-repeatedevent <- repeatedevent %>%  ungroup() %>%
-count(zip, Year) %>%  
-  rename(nb_repeat_donors= n)
+#A simpler way is to substrat first time donors from total donors  
+
+preprocessed <- left_join(preprosessing ,firstevent,
+  by = c("zip", "Year")) %>% mutate( nb_repeat_donors= nb_donors_per_zip - nb_first_time_donors)
+
+preprocessed$nb_first_time_donors[is.na(preprocessed$nb_first_time_donors)] <- 0
+preprocessed$nb_repeat_donors[is.na(preprocessed$nb_repeat_donors)] <- 0
+
+
+```
+
+
+
+
+```{r}
+
+# events <- left_join(firstevent,repeatedevent,
+# by = c("zip","Year"))
+
+
+```
+
+```{r}
+
+# preprocessed <- left_join(preprosessing ,events,
+#   by = c("zip", "Year"))
+
   
 
 ```
 
 
-
-```{r}
-
-```
-
-
-
-```{r}
-
-events <- left_join(firstevent,repeatedevent,
-by = c("zip","Year"))
-
-
-```
-
-```{r}
-
-preprocessed <- left_join(preprosessing ,events,
-  by = c("zip", "Year"))
-
-  
-
-```
 
 
 # #joining the data with Paavodata
@@ -152,10 +166,12 @@ preprocessed <- left_join(preprosessing ,events,
 preprosessed_paavo <- paavodata %>% 
   rename(zip = pono, Year= vuosi) %>%   
   filter(Year == 2019) %>% 
-  mutate(eligible_population = he_18_19+ he_20_24+ he_25_29+ he_30_34+ he_40_44+
-                                  he_45_49+ he_50_54+ he_55_59+ he_60_64+ he_65_69,) %>% 
-  dplyr::select(-Year) %>% 
-  full_join(preprocessed,by = c("zip")) %>% 
+  mutate(eligible_population = he_18_19 + he_20_24 + he_25_29 + he_30_34 + he_40_44 +
+                                  he_45_49 + he_50_54 + he_55_59 + he_60_64 + he_65_69) %>% 
+  dplyr::select(-Year)
+
+ preprosessed_paavo <- 
+  right_join(preprosessed_paavo, preprocessed, by = c("zip")) %>% 
   dplyr::select(zip, Year, eligible_population, nb_donors_per_zip,nb_donations_per_zip, nb_first_time_donors, nb_repeat_donors, hr_mtu, hr_ktu,nimi, ko_al_kork, ko_yl_kork,
 pt_tyott, pt_tyoll,  ko_ika18y, hr_tuy) %>% 
     rename (unemployed = pt_tyott,
@@ -175,14 +191,26 @@ mutate( prop_donors= nb_donors_per_zip/eligible_population,
   proportion_inhabitants_with_higher_education= higher_education/eligible_population)
 
 
+#Drop post-codes with no data
+ 
+preprosessed_paavo <- preprosessed_paavo %>% filter(!is.na(eligible_population))
+
+
+#Are there NA's left
+preprosessed_paavo[apply(preprosessed_paavo,1,function(x){any(is.na(x))}),]
+
 ```
 
 
+```{r summary}
+summary(preprosessed_paavo)
+
+```
 
 
 ```{r}
 
-save(preprosessed_paavo,  file = paste0("preprocessed",Sys.Date(),".RData")) 
+save(preprosessed_paavo,  file = paste0("preprocessed.",Sys.Date(),".RData")) 
 ```
 
 
