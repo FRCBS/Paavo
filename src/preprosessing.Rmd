@@ -18,15 +18,41 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(lubridate)
 
+#ilposdata <- head(ilposdata,1000)
+
+```
 
 
+
+```{r}
+ilposdata %>% mutate(zip = recode(zip,
+                            #old value = new value
+                            "106001" = "10600",
+                            "201001" = "20100",
+                            "216001"=  "21600",
+                            "257001" = "25710", 
+                             "27001" = "27100",
+                             "41301"= "41310" ,
+                             "61001"="61100",
+                             "651001"= "61100",
+                             "669001"="66900",
+                             "685001" = "68500",
+                             "686001"= "68600",
+                             "686201"= "68620",
+                             "651001"= "06500",
+                             "651001" = "65100",
+                             "652001" = "65200",
+                              "669001"= "66900",
+                              "686001" = "68600",
+                              "688001" = "68600", 
+                               "688001" = "68600")) 
 ```
 
 
 # Numbers of donors per zip and number of donations per zip
 ```{r}
+
 ilposdata$zip <- gsub('.*NA.*',NA,ilposdata$zip)
-ilposdata$Year <- gsub('.*NA.*',NA,ilposYear)
 
 prepocessing <- ilposdata %>% 
   mutate(Year = year(dateonly)) %>% 
@@ -35,6 +61,7 @@ prepocessing <- ilposdata %>%
     count(Year, zip) %>% 
     filter(Year == 2017 | Year == 2018) %>%
     rename(nb_donors_per_zip = n) 
+
 
 
 ```
@@ -80,17 +107,24 @@ ungroup()
 repeatedevent <- ilposdata %>%
  mutate(Year = year(dateonly)) %>%
  filter(Year == 2017| Year== 2018) %>% 
- filter(donat_phleb == "K") %>% 
- group_by(donor, Year) %>% #
-filter(dateonly == min(dateonly)) %>% 
- filter(FirstEvent == FALSE) %>%  
- ungroup() %>%
+ filter(donat_phleb == "K") %>% filter(FirstEvent == FALSE)
+ 
+repeatedevent <- repeatedevent %>%  group_by(donor, Year) %>% 
+ filter(dateonly == min(dateonly))  
+ 
+
+repeatedevent <- repeatedevent %>%  ungroup() %>%
 count(zip, Year) %>%  
   rename(nb_repeat_donors= n)
   
 
 ```
 
+
+
+```{r}
+
+```
 
 
 
@@ -143,9 +177,12 @@ mutate( prop_donors= nb_donors_per_zip/eligible_population,
 
 ```
 
+
+
+
 ```{r}
 
-save(preprosessed_paavo, file = "preprocessed.RData") 
+save(preprosessed_paavo,  file = paste0("preprocessed",Sys.Date(),".RData")) 
 ```
 
 
