@@ -145,8 +145,6 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
   facet_grid(Year~.)
 p
 ```
-```{r}
 
-```
 
 
