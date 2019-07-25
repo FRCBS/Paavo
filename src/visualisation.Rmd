@@ -43,7 +43,8 @@ library(viridis)
 df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_donors))
 p <- ggplot(data=df)
 p <- p +  geom_point(mapping=aes(y = prop_donors, x = medianincome, colour=eligible_population))
-p <- p +   scale_x_log10() + geom_smooth(aes(y = prop_donors, x = medianincome)) +
+p <- p +   scale_x_log10()+
+  geom_smooth(aes(y = prop_donors, x = medianincome)) +
  scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
 labs(x = "Median income",
         y = "Proportion of donors",
@@ -140,11 +141,148 @@ p
 ```{r}
 p <- ggplot(data=df)
 p <- p +  geom_point(mapping=aes(y = prop_repeat_donors, x = proportion_inhabitants_with_higher_education, colour=eligible_population))
-p <- p +   scale_x_log10() + geom_smooth(aes(y = prop_repeat_donors, x = proportion_inhabitants_with_higher_education)) +
+p <- p +   scale_x_log10() + 
+geom_smooth(aes(y = prop_repeat_donors, x = proportion_inhabitants_with_higher_education)) +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
   facet_grid(Year~.)
 p
 ```
+# Helsinki-Uusimaa
+```{r}
+huuma <-preprosessed_paavo %>% 
+filter(zip < 1) 
+
+ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_donors, color= eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+```{r}
+huuma <-preprosessed_paavo %>% 
+filter(zip < 1) 
+
+ggplot(data=huuma, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors, color= eligible_population))+
+geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
+facet_grid(Year~.)
+```
+```{r}
+ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_donors, color= eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
 
 
+
+#new donors
+
+```{r}
+ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_new_donors, color= eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_new_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+
+
+#repeat donors
+
+```{r}
+ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_repeat_donors, color= eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+
+```{r}
+ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_donors, group= zip, color=eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
+#geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+geom_boxplot() 
+#coord_flip()
+```
+
+# Not very informative part
+
+```{r}
+ ggplot(data = huuma,
+            mapping = aes(x = medianincome, y = prop_donors))+
+geom_point(alpha= 0.25) +
+scale_x_log10() + 
+  geom_text(data = huuma,check_overlap = TRUE, size=3,
+mapping = aes(label = nimi)) + 
+facet_grid(Year ~.)
+
+```
+```{r}
+ ggplot(data = huuma,
+            mapping = aes(x = proportion_inhabitants_with_higher_education, y = prop_donors))+
+geom_point(alpha= 0.25) +
+scale_x_log10() + 
+  geom_text(data = huuma,check_overlap = TRUE,
+mapping = aes(label = nimi)) +
+facet_grid(Year ~.)
+```
+
+# colored by repeated donors
+```{r}
+
+ggplot(data=preprosessed_paavo, mapping= aes(x= medianincome, y= prop_donors,  color=prop_repeat_donors))+
+geom_point ()+ 
+scale_x_log10() +
+geom_smooth()+
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
+facet_wrap (Year~.)
+
+
+```
+
+
+
+```{r}
+
+ggplot(data=preprosessed_paavo, mapping= aes(x= medianincome, y= prop_donors,  color=prop_new_donors))+
+geom_point ()+ 
+scale_x_log10() +
+geom_smooth()+
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
+facet_wrap (Year~.)
+```
+
+```{r}
+ggplot(data=preprosessed_paavo, mapping= aes(x= prop_new_donors))+
+geom_histogram ()+
+scale_x_log10()
+facet_grid(Year~.)
+
+
+ggplot(data=preprosessed_paavo, mapping= aes(x= prop_repeat_donors))+
+geom_histogram ()+
+scale_x_log10()+
+  facet_grid(Year~.)
+
+
+ggplot(data=preprosessed_paavo, mapping= aes(x= prop_donors))+
+geom_histogram() +
+scale_x_log10()+
+facet_grid(Year~.)
+
+```
+```{r}
+
+```
 
