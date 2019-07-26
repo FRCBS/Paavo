@@ -59,7 +59,7 @@ library(viridis)
 
     ## Loading required package: viridisLite
 
-# Relationship between proportion of donors and median income.
+\#Relationship between proportion of donors and median income.
 
 ``` r
 df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_donors))
@@ -81,8 +81,38 @@ p
 
     ## Warning: Removed 6 rows containing missing values (geom_point).
 
-![](visualisation_files/figure-gfm/unnamed-chunk-4-1.png)<!-- --> \# New
-donors and repeated donors per median income
+![](visualisation_files/figure-gfm/unnamed-chunk-4-1.png)<!-- --> Size
+matters. Population and outliers needs to be controlled before any
+modeling.
+
+## New donors and per median income
+
+``` r
+df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_new_donors))
+p <- ggplot(data=df)
+p <- p +  geom_point(mapping=aes(y = prop_new_donors, x = medianincome, colour=eligible_population))
+p <- p +   scale_x_log10()+
+  geom_smooth(aes(y = prop_donors, x = medianincome)) +
+ scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
+labs(x = "Median income",
+        y = "Proportion of new donors",
+        title = "Proportion of new donors per median income of postal codes per year")+
+facet_grid(Year ~.)
+p
+```
+
+    ## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+
+    ## Warning: Removed 6 rows containing non-finite values (stat_smooth).
+
+    ## Warning: Removed 6 rows containing missing values (geom_point).
+
+![](visualisation_files/figure-gfm/unnamed-chunk-5-1.png)<!-- --> New
+donors looks really weird. It could be by low numbers of first time
+donors in many postal code areas. Maybe need to be modelled on their own
+or at least filtered.
+
+\#\#repeated donors
 
 ``` r
 df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_new_donors))
@@ -95,7 +125,7 @@ p
 
     ## Warning: Removed 6 rows containing missing values (geom_point).
 
-![](visualisation_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](visualisation_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_donors))
@@ -113,61 +143,18 @@ p
 
     ## Warning: Removed 6 rows containing missing values (geom_point).
 
-![](visualisation_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
-
-# Average income
-
-``` r
-df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_donors))
-p <- ggplot(data=df)
-p <- p +  geom_point(mapping=aes(y = prop_donors, x = averageincome, colour=eligible_population))
-p <- p +   scale_x_log10() + geom_smooth(aes(y = prop_donors, x = medianincome)) +
- scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
-labs(x = "Average income",
-        y = "Proportion of donors",
-        title = "Proportion of donors per average income of postal codes per year")+
-facet_grid(Year ~.)
-p
-```
-
-    ## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
-
-    ## Warning: Removed 6 rows containing non-finite values (stat_smooth).
-
-    ## Warning: Removed 6 rows containing missing values (geom_point).
-
 ![](visualisation_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
-
-``` r
-df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_new_donors))
-p <- ggplot(data=df)
-p <- p +  geom_point(mapping=aes(y = prop_new_donors, x = averageincome, colour=eligible_population))
-p <- p +   scale_x_log10() + geom_smooth(aes(y = prop_new_donors, x = averageincome)) +
- scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
-labs(x = "Average income",
-        y = "Proportion of first time donors",
-        title = "Proportion of donors per average income of postal codes per year")+
-facet_grid(Year ~.)
-p
-```
-
-    ## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
-
-    ## Warning: Removed 6 rows containing non-finite values (stat_smooth).
-
-    ## Warning: Removed 6 rows containing missing values (geom_point).
-
-![](visualisation_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_repeat_donors))
 p <- ggplot(data=df)
-p <- p +  geom_point(mapping=aes(y = prop_repeat_donors, x = averageincome, colour=eligible_population))
-p <- p +   scale_x_log10() + geom_smooth(aes(y = prop_repeat_donors, x = averageincome)) +
+p <- p +  geom_point(mapping=aes(y = prop_repeat_donors, x = medianincome, colour=eligible_population))
+p <- p +   scale_x_log10()+
+  geom_smooth(aes(y = prop_donors, x = medianincome)) +
  scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
-labs(x = "Average income",
-        y = "Proportion of non repeat donors",
-        title = "Proportion of repeat  donors per average income of postal codes per year")+
+labs(x = "Median income",
+        y = "Proportion of repeat donors",
+        title = "Proportion of repeat donors per median income of postal codes per year")+
 facet_grid(Year ~.)
 p
 ```
@@ -178,9 +165,11 @@ p
 
     ## Warning: Removed 6 rows containing missing values (geom_point).
 
-![](visualisation_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](visualisation_files/figure-gfm/unnamed-chunk-8-1.png)<!-- --> Repeat
+donors also have high amount of outliers, where there are no postal
+codes with donors.
 
-Relationship between higher education and proportion of donors
+# Relationship between higher education and proportion of donors
 
 ``` r
 p <- ggplot(data=df)
@@ -201,8 +190,9 @@ p
 
     ## Warning: Removed 6 rows containing missing values (geom_point).
 
-![](visualisation_files/figure-gfm/unnamed-chunk-10-1.png)<!-- --> \#
-First time donors
+![](visualisation_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+\#\#First time donors
 
 ``` r
 p <- ggplot(data=df)
@@ -223,8 +213,9 @@ p
 
     ## Warning: Removed 6 rows containing missing values (geom_point).
 
-![](visualisation_files/figure-gfm/unnamed-chunk-11-1.png)<!-- --> \#
-repeated donors
+![](visualisation_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+## repeated donors
 
 ``` r
 p <- ggplot(data=df)
@@ -246,128 +237,24 @@ p
 
     ## Warning: Removed 6 rows containing missing values (geom_point).
 
-![](visualisation_files/figure-gfm/unnamed-chunk-12-1.png)<!-- --> \#
-Helsinki-Uusimaa
+![](visualisation_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
-huuma <-preprosessed_paavo %>% 
-filter(zip < 1) 
-
-ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_donors, color= eligible_population))+
-geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-facet_grid(Year~.)
+mörkö <- preprosessed_paavo %>% 
+filter(prop_donors > 0.04) %>% 
+filter(Year == 2018) %>% 
+filter(eligible_population > 400)
+ggplot(data=mörkö, mapping= aes(x= medianincome, y= prop_donors )) +
+geom_point() +
+geom_text(data = mörkö,check_overlap =TRUE,show.legend = TRUE,hjust = 0,
+mapping = aes(label = nimi)) 
 ```
 
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](visualisation_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
-
-``` r
-huuma <-preprosessed_paavo %>% 
-filter(zip < 1) 
-
-ggplot(data=huuma, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors, color= eligible_population))+
-geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
-facet_grid(Year~.)
-```
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](visualisation_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
-
-``` r
-ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_donors, color= eligible_population))+
-geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-facet_grid(Year~.)
-```
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](visualisation_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
-
-\#new
-donors
-
-``` r
-ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_new_donors, color= eligible_population))+
-geom_point(mapping = aes(x= medianincome, y= prop_new_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-facet_grid(Year~.)
-```
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](visualisation_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
-
-\#repeat
-donors
-
-``` r
-ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_repeat_donors, color= eligible_population))+
-geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-facet_grid(Year~.)
-```
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
-![](visualisation_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
-
-``` r
-ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_donors, group= zip, color=eligible_population))+
-geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
-#geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-geom_boxplot() 
-```
-
-![](visualisation_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
-
-``` r
-#coord_flip()
-```
-
-# Not very informative part
-
-``` r
- ggplot(data = huuma,
-            mapping = aes(x = medianincome, y = prop_donors))+
-geom_point(alpha= 0.25) +
-scale_x_log10() + 
-  geom_text(data = huuma,check_overlap = TRUE, size=3,
-mapping = aes(label = nimi)) + 
-facet_grid(Year ~.)
-```
-
-![](visualisation_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
-
-``` r
- ggplot(data = huuma,
-            mapping = aes(x = proportion_inhabitants_with_higher_education, y = prop_donors))+
-geom_point(alpha= 0.25) +
-scale_x_log10() + 
-  geom_text(data = huuma,check_overlap = TRUE,
-mapping = aes(label = nimi)) +
-facet_grid(Year ~.)
-```
-
-![](visualisation_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
-
-# colored by repeated donors
+![](visualisation_files/figure-gfm/unnamed-chunk-12-1.png)<!-- --> \#\#
+First attempt to visualise areas with population size and proportion of
+donors. It has raised a question that Finnish-Swedish population could
+have higher proportion of blood doning. Needs further
+investigating.
 
 ``` r
 ggplot(data=preprosessed_paavo, mapping= aes(x= medianincome, y= prop_donors,  color=prop_repeat_donors))+
@@ -388,7 +275,7 @@ facet_wrap (Year~.)
 
     ## Warning: Removed 6 rows containing missing values (geom_point).
 
-![](visualisation_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](visualisation_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ``` r
 ggplot(data=preprosessed_paavo, mapping= aes(x= medianincome, y= prop_donors,  color=prop_new_donors))+
@@ -409,65 +296,4 @@ facet_wrap (Year~.)
 
     ## Warning: Removed 6 rows containing missing values (geom_point).
 
-![](visualisation_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
-
-``` r
-ggplot(data=preprosessed_paavo, mapping= aes(x= prop_new_donors))+
-geom_histogram ()+
-scale_x_log10()
-```
-
-    ## Warning: Transformation introduced infinite values in continuous x-axis
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-    ## Warning: Removed 2047 rows containing non-finite values (stat_bin).
-
-![](visualisation_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
-
-``` r
-facet_grid(Year~.)
-```
-
-    ## <ggproto object: Class FacetGrid, Facet, gg>
-    ##     compute_layout: function
-    ##     draw_back: function
-    ##     draw_front: function
-    ##     draw_labels: function
-    ##     draw_panels: function
-    ##     finish_data: function
-    ##     init_scales: function
-    ##     map_data: function
-    ##     params: list
-    ##     setup_data: function
-    ##     setup_params: function
-    ##     shrink: TRUE
-    ##     train_scales: function
-    ##     vars: function
-    ##     super:  <ggproto object: Class FacetGrid, Facet, gg>
-
-``` r
-ggplot(data=preprosessed_paavo, mapping= aes(x= prop_repeat_donors))+
-geom_histogram ()+
-scale_x_log10()+
-  facet_grid(Year~.)
-```
-
-    ## Warning: Transformation introduced infinite values in continuous x-axis
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-    ## Warning: Removed 2101 rows containing non-finite values (stat_bin).
-
-![](visualisation_files/figure-gfm/unnamed-chunk-23-2.png)<!-- -->
-
-``` r
-ggplot(data=preprosessed_paavo, mapping= aes(x= prop_donors))+
-geom_histogram() +
-scale_x_log10()+
-facet_grid(Year~.)
-```
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-![](visualisation_files/figure-gfm/unnamed-chunk-23-3.png)<!-- -->
+![](visualisation_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->

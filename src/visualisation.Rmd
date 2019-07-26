@@ -37,7 +37,7 @@ library(viridis)
 
 ```
 
-# Relationship between proportion of donors and median income. 
+#Relationship between proportion of donors and median income. 
 
 ```{r}
 df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_donors))
@@ -52,7 +52,27 @@ labs(x = "Median income",
 facet_grid(Year ~.)
 p
 ```
-# New donors and repeated donors per median income  
+Size matters. Population and outliers needs to be controlled before any modeling. 
+
+
+
+## New donors and per median income
+```{r}
+df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_new_donors))
+p <- ggplot(data=df)
+p <- p +  geom_point(mapping=aes(y = prop_new_donors, x = medianincome, colour=eligible_population))
+p <- p +   scale_x_log10()+
+  geom_smooth(aes(y = prop_donors, x = medianincome)) +
+ scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
+labs(x = "Median income",
+        y = "Proportion of new donors",
+        title = "Proportion of new donors per median income of postal codes per year")+
+facet_grid(Year ~.)
+p
+```
+New donors looks really weird. It could be by low numbers of first time donors in many postal code areas.  Maybe need to be modelled on their own or at least filtered. 
+
+##repeated donors 
 
 ```{r}
 df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_new_donors))
@@ -74,50 +94,23 @@ facet_grid (Year~.)
 p
 ```
 
-# Average income
-```{r}
-df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_donors))
-p <- ggplot(data=df)
-p <- p +  geom_point(mapping=aes(y = prop_donors, x = averageincome, colour=eligible_population))
-p <- p +   scale_x_log10() + geom_smooth(aes(y = prop_donors, x = medianincome)) +
- scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
-labs(x = "Average income",
-        y = "Proportion of donors",
-        title = "Proportion of donors per average income of postal codes per year")+
-facet_grid(Year ~.)
-p
 
-```
-
-```{r}
-df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_new_donors))
-p <- ggplot(data=df)
-p <- p +  geom_point(mapping=aes(y = prop_new_donors, x = averageincome, colour=eligible_population))
-p <- p +   scale_x_log10() + geom_smooth(aes(y = prop_new_donors, x = averageincome)) +
- scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
-labs(x = "Average income",
-        y = "Proportion of first time donors",
-        title = "Proportion of donors per average income of postal codes per year")+
-facet_grid(Year ~.)
-p
-```
 ```{r}
 df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_repeat_donors))
 p <- ggplot(data=df)
-p <- p +  geom_point(mapping=aes(y = prop_repeat_donors, x = averageincome, colour=eligible_population))
-p <- p +   scale_x_log10() + geom_smooth(aes(y = prop_repeat_donors, x = averageincome)) +
+p <- p +  geom_point(mapping=aes(y = prop_repeat_donors, x = medianincome, colour=eligible_population))
+p <- p +   scale_x_log10()+
+  geom_smooth(aes(y = prop_donors, x = medianincome)) +
  scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
-labs(x = "Average income",
-        y = "Proportion of non repeat donors",
-        title = "Proportion of repeat  donors per average income of postal codes per year")+
+labs(x = "Median income",
+        y = "Proportion of repeat donors",
+        title = "Proportion of repeat donors per median income of postal codes per year")+
 facet_grid(Year ~.)
 p
 ```
+Repeat donors also have high amount of outliers, where there are no postal codes with donors. 
 
-
-
-
-Relationship between higher education and proportion of donors
+# Relationship between higher education and proportion of donors
 ```{r}
 
 p <- ggplot(data=df)
@@ -128,7 +121,10 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
 p
 
 ```
-# First time donors
+
+
+
+##First time donors
 ```{r}
 p <- ggplot(data=df)
 p <- p +  geom_point(mapping=aes(y = prop_new_donors, x = proportion_inhabitants_with_higher_education, colour=eligible_population))
@@ -137,7 +133,10 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
   facet_grid(Year~.)
 p
 ```
-# repeated donors
+
+
+
+## repeated donors
 ```{r}
 p <- ggplot(data=df)
 p <- p +  geom_point(mapping=aes(y = prop_repeat_donors, x = proportion_inhabitants_with_higher_education, colour=eligible_population))
@@ -147,99 +146,30 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
   facet_grid(Year~.)
 p
 ```
-# Helsinki-Uusimaa
-```{r}
-huuma <-preprosessed_paavo %>% 
-filter(zip < 1) 
-
-ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_donors, color= eligible_population))+
-geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-facet_grid(Year~.)
-```
-```{r}
-huuma <-preprosessed_paavo %>% 
-filter(zip < 1) 
-
-ggplot(data=huuma, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors, color= eligible_population))+
-geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
-facet_grid(Year~.)
-```
-```{r}
-ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_donors, color= eligible_population))+
-geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-facet_grid(Year~.)
-```
 
 
 
-#new donors
 
-```{r}
-ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_new_donors, color= eligible_population))+
-geom_point(mapping = aes(x= medianincome, y= prop_new_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-facet_grid(Year~.)
-```
-
-
-
-#repeat donors
-
-```{r}
-ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_repeat_donors, color= eligible_population))+
-geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-facet_grid(Year~.)
-```
 
 
 ```{r}
-ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_donors, group= zip, color=eligible_population))+
-geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
-#geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-geom_boxplot() 
-#coord_flip()
-```
+mörkö <- preprosessed_paavo %>% 
+filter(prop_donors > 0.04) %>% 
+filter(Year == 2018) %>% 
+filter(eligible_population > 400)
+ggplot(data=mörkö, mapping= aes(x= medianincome, y= prop_donors )) +
+geom_point() +
+geom_text(data = mörkö,check_overlap =TRUE,show.legend = TRUE,hjust = 0,
+mapping = aes(label = nimi)) 
 
-# Not very informative part
-
-```{r}
- ggplot(data = huuma,
-            mapping = aes(x = medianincome, y = prop_donors))+
-geom_point(alpha= 0.25) +
-scale_x_log10() + 
-  geom_text(data = huuma,check_overlap = TRUE, size=3,
-mapping = aes(label = nimi)) + 
-facet_grid(Year ~.)
 
 ```
-```{r}
- ggplot(data = huuma,
-            mapping = aes(x = proportion_inhabitants_with_higher_education, y = prop_donors))+
-geom_point(alpha= 0.25) +
-scale_x_log10() + 
-  geom_text(data = huuma,check_overlap = TRUE,
-mapping = aes(label = nimi)) +
-facet_grid(Year ~.)
-```
+## First attempt to visualise areas with population size and proportion of donors.  It has raised a question that Finnish-Swedish population could have higher proportion of blood doning. Needs further investigating.
 
-# colored by repeated donors
+
+
 ```{r}
+
 
 ggplot(data=preprosessed_paavo, mapping= aes(x= medianincome, y= prop_donors,  color=prop_repeat_donors))+
 geom_point ()+ 
@@ -250,11 +180,7 @@ facet_wrap (Year~.)
 
 
 ```
-
-
-
 ```{r}
-
 ggplot(data=preprosessed_paavo, mapping= aes(x= medianincome, y= prop_donors,  color=prop_new_donors))+
 geom_point ()+ 
 scale_x_log10() +
@@ -263,26 +189,5 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
 facet_wrap (Year~.)
 ```
 
-```{r}
-ggplot(data=preprosessed_paavo, mapping= aes(x= prop_new_donors))+
-geom_histogram ()+
-scale_x_log10()
-facet_grid(Year~.)
 
-
-ggplot(data=preprosessed_paavo, mapping= aes(x= prop_repeat_donors))+
-geom_histogram ()+
-scale_x_log10()+
-  facet_grid(Year~.)
-
-
-ggplot(data=preprosessed_paavo, mapping= aes(x= prop_donors))+
-geom_histogram() +
-scale_x_log10()+
-facet_grid(Year~.)
-
-```
-```{r}
-
-```
 
