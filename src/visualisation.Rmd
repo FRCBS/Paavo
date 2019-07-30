@@ -20,11 +20,6 @@ getwd()
 ```
 
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r cars}
 
@@ -52,7 +47,7 @@ labs(x = "Median income",
 facet_grid(Year ~.)
 p
 ```
-Size matters. Population and outliers needs to be controlled before any modeling. 
+Size matters. Population and outliers needs to be controlled before any modeling.  ¤
 
 
 
@@ -62,7 +57,7 @@ df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_new_donors))
 p <- ggplot(data=df)
 p <- p +  geom_point(mapping=aes(y = prop_new_donors, x = medianincome, colour=eligible_population))
 p <- p +   scale_x_log10()+
-  geom_smooth(aes(y = prop_donors, x = medianincome)) +
+  geom_smooth(aes(y = prop_new_donors, x = medianincome)) +
  scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
 labs(x = "Median income",
         y = "Proportion of new donors",
@@ -70,7 +65,7 @@ labs(x = "Median income",
 facet_grid(Year ~.)
 p
 ```
-New donors looks really weird. It could be by low numbers of first time donors in many postal code areas.  Maybe need to be modelled on their own or at least filtered. 
+New donors looks really weird. It could be by low numbers of first time donors in many postal code areas.  Maybe need to be modelled on their own or at least filtered. eg vähintään 100
 
 ##repeated donors 
 
@@ -100,7 +95,7 @@ df <- as.tbl(preprosessed_paavo) %>% filter(!is.na(prop_repeat_donors))
 p <- ggplot(data=df)
 p <- p +  geom_point(mapping=aes(y = prop_repeat_donors, x = medianincome, colour=eligible_population))
 p <- p +   scale_x_log10()+
-  geom_smooth(aes(y = prop_donors, x = medianincome)) +
+  geom_smooth(aes(y = prop_repeat_donors, x = medianincome)) +
  scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
 labs(x = "Median income",
         y = "Proportion of repeat donors",
@@ -108,7 +103,7 @@ labs(x = "Median income",
 facet_grid(Year ~.)
 p
 ```
-Repeat donors also have high amount of outliers, where there are no postal codes with donors. 
+Repeat donors also have high amount of outliers, where there are no postal codes with donors.  Kato onko repeat donoreita joka paikassa. Vertaa repeattia ja newta missä ei ole jompaa kumpaa. Suodatuksen jälkeen millaisista paikoista ei ole repeatteja. 
 
 # Relationship between higher education and proportion of donors
 ```{r}
@@ -122,7 +117,7 @@ p
 
 ```
 
-
+Alle sataset pois eligiblesta
 
 ##First time donors
 ```{r}
@@ -164,7 +159,7 @@ mapping = aes(label = nimi))
 
 
 ```
-## First attempt to visualise areas with population size and proportion of donors.  It has raised a question that Finnish-Swedish population could have higher proportion of blood doning. Needs further investigating.
+## First attempt to visualise areas with population size and proportion of donors.  It has raised a question that Finnish-Swedish population could have higher proportion of blood doning. Needs further investigating. Kuntatasolla tai postinumerotasolla suomenruotsalaisten alueet. 
 
 
 
@@ -188,6 +183,6 @@ geom_smooth()+
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
 facet_wrap (Year~.)
 ```
+# Mediaani ja keskiansio juttu jos löydät. 
 
-
-
+#

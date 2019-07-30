@@ -1,0 +1,120 @@
+---
+title: "Helsinki-Uusimaa"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+load("/home/ilpo/Paavo/data/preprocessed.2019-07-24.RData")
+setwd(dir="/home/ilpo/Paavo/src")
+getwd()
+```
+
+```{r}
+library(tidyverse)
+library(viridis)
+library(lubridate)
+```
+
+
+
+# Helsinki-Uusimaa is done by filtering zip smaller than 1. It only leaves 695 obs at the dataset. 
+```{r}
+huuma <-preprosessed_paavo %>% 
+filter(zip < 1) 
+str(huuma)
+
+```
+
+
+```{r}
+
+
+ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_donors, color= eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+```{r}
+huuma <-preprosessed_paavo %>% 
+filter(zip < 1) 
+
+ggplot(data=huuma, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors, color= eligible_population))+
+geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
+facet_grid(Year~.)
+```
+```{r}
+ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_donors, color= eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+
+
+#new donors
+
+```{r}
+ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_new_donors, color= eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_new_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+
+
+#repeat donors
+
+```{r}
+ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_repeat_donors, color= eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+
+```{r}
+ggplot(data=huuma, mapping = aes(x= medianincome, y= prop_donors, group= zip, color=eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
+#geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+geom_boxplot() 
+#coord_flip()
+```
+
+  # Not very informative part
+
+```{r}
+ ggplot(data = huuma,
+            mapping = aes(x = medianincome, y = prop_donors))+
+geom_point(alpha= 0.25) +
+scale_x_log10() + 
+  geom_text(data = huuma,check_overlap = TRUE, na.rm= TRUE, size=3,
+mapping = aes(label = nimi)) + 
+facet_grid(Year ~.)
+
+```
+```{r}
+ ggplot(data = huuma,
+            mapping = aes(x = proportion_inhabitants_with_higher_education, y = prop_donors))+
+geom_point(alpha= 0.25) +
+scale_x_log10() + 
+  geom_text(data = huuma,check_overlap = TRUE,show.legend = TRUE,hjust = 0, nudge_x = 0.05,
+mapping = aes(label = nimi)) +
+facet_grid(Year ~.)
+```
+
