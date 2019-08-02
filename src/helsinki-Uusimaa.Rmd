@@ -28,6 +28,15 @@ str(huuma)
 
 ```
 
+#Filtering out 0.00 values and places with less than 99 people. Also Otaniemi has been removed because big proportion of students and because of that lowest income in Uusimaa. 
+```{r}
+filter(eligible_population > 99) %>%
+filter(prop_new_donors > 0.000) %>% 
+filter(prop_repeat_donors > 0.00) 
+
+```
+
+
 
 ```{r}
 
@@ -113,8 +122,26 @@ facet_grid(Year ~.)
             mapping = aes(x = proportion_inhabitants_with_higher_education, y = prop_donors))+
 geom_point(alpha= 0.25) +
 scale_x_log10() + 
-  geom_text(data = huuma,check_overlap = TRUE,show.legend = TRUE,hjust = 0, nudge_x = 0.05,
+  geom_text(data = huuma,check_overlap = TRUE,show.legend = TRUE,hjust = 0,
 mapping = aes(label = nimi)) +
 facet_grid(Year ~.)
+```
+
+
+```{r}
+huuma %>% 
+filter(eligible_population > 99 )
+ggplot(data = huuma,
+            mapping = aes(x = eligible_population, y = prop_donors))+
+geom_point(alpha= 0.25) +
+scale_x_log10() + 
+ geom_smooth() +
+facet_grid(Year ~.)
+
+```
+
+```{r}
+ggplot(data=huuma, mapping = aes(x= eligible_population))+
+geom_histogram (binwidth= 100) 
 ```
 

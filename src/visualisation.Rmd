@@ -49,6 +49,25 @@ p
 ```
 Size matters. Population and outliers needs to be controlled before any modeling.  ¤
 
+##Filtered version 
+
+
+```{r}
+#filtered_paavo <- preprosessed_paavo %>% 
+##ilter(eligible_population > 99) %>%
+#filter(!is.na(prop_donors)) 
+
+
+ggplot(data= filtered_paavo,mapping= aes(x= medianincome, y= prop_donors))+
+geom_point(mapping=aes(y = prop_donors, x = medianincome, colour=eligible_population))+ 
+  scale_x_log10()+
+  geom_smooth(aes(y = prop_donors, x = medianincome)) +
+ scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
+labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income of postal codes per year")+
+facet_grid(Year ~.)
+```
 
 
 ## New donors and per median income
@@ -117,8 +136,19 @@ p
 
 ```
 
-Alle sataset pois eligiblesta
+Alle sataset pois eligiblesta 
+filtered version = eligible population > 100
 
+```{r}
+ggplot(data= filtered_paavo, mapping=aes(y = prop_new_donors, x = proportion_inhabitants_with_higher_education, colour=eligible_population))+
+geom_point(mapping=aes(y = prop_new_donors, x = proportion_inhabitants_with_higher_education, colour=eligible_population))+
+  scale_x_log10() + 
+geom_smooth(aes(y = prop_new_donors, x = proportion_inhabitants_with_higher_education)) +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") 
+  #facet_grid(Year~.)
+```
+
+ 
 ##First time donors
 ```{r}
 p <- ggplot(data=df)
@@ -186,3 +216,47 @@ facet_wrap (Year~.)
 # Mediaani ja keskiansio juttu jos löydät. 
 
 #
+```{r}
+preprosessed_paavo %>% 
+ggplot(aes(x= prop_donors)) +
+geom_histogram() +
+facet_grid(Year~.)
+
+preprosessed_paavo %>% 
+ggplot(aes(x= prop_donors)) +
+geom_histogram() +
+scale_x_log10() + 
+facet_grid(Year~.)
+```
+```{r}
+preprosessed_paavo %>% 
+ggplot(aes(x= proportion_inhabitants_with_higher_education)) +
+geom_histogram() +
+scale_x_log10() + 
+facet_grid(Year~.)
+
+ggplot(data=preprosessed_paavo, mapping = aes(x= prop_repeat_donors))+
+geom_histogram ()
+
+
+ggplot(data=preprosessed_paavo, mapping = aes(x= prop_new_donors))+
+geom_histogram ()
+
+
+ggplot(data=preprosessed_paavo, mapping = aes(x= medianincome))+
+geom_histogram () + 
+scale_x_log10() + 
+facet_grid(Year~.)
+
+
+ggplot(data=preprosessed_paavo, mapping = aes(x= averageincome))+
+geom_histogram () + 
+scale_x_log10() + 
+facet_grid(Year~.)
+
+ggplot(data=preprosessed_paavo, mapping = aes(x= eligible_population))+
+geom_histogram () 
+
+
+```
+

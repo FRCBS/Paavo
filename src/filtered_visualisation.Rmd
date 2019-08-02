@@ -1,0 +1,103 @@
+---
+title: "Filtered visualisation"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+load("/home/ilpo/Paavo/data/preprocessed.2019-07-24.RData")
+setwd(dir="/home/ilpo/Paavo/src")
+getwd()
+```
+
+
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(viridis)
+
+```
+
+## Including Plots
+
+
+```{r}
+
+filtered_paavo <- preprosessed_paavo %>% 
+filter(eligible_population > 99) %>%
+filter(prop_new_donors > 0.000) %>% 
+filter(prop_repeat_donors > 0.00) 
+
+
+```
+Zipcodes are mostly from lapland with few exceptions (Meilahti Sairaala-alue). Im losing 765 observations by filtering the suitable population, but nb donation per zip is at is peak 19 in this subset.
+
+
+```{r}
+
+ggplot(data= filtered_paavo,mapping= aes(x= medianincome, y= prop_donors))+
+geom_point(mapping=aes(y = prop_donors, x = medianincome, colour=eligible_population))+ 
+  scale_x_log10()+
+  geom_smooth(aes(y = prop_donors, x = medianincome)) +
+ scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
+labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income of postal codes per year")+
+facet_grid(Year ~.)
+
+    
+```
+
+
+
+
+
+```{r}
+filtered_paavo %>% 
+filter(prop_repeat_donors > 0.00) %>%
+  filter(!is.na(prop_repeat_donors)) %>% 
+ggplot(data=filtered_paavo, mapping = aes(x= medianincome, y= prop_repeat_donors, colour= eligible_population)) +
+geom_point(mapping=aes(y = prop_repeat_donors, x = medianincome, colour=eligible_population))+
+scale_x_log10()+
+  geom_smooth(aes(y = prop_repeat_donors, x = medianincome)) +
+ scale_color_viridis(discrete=FALSE,direction = -1,trans="log")+
+labs(x = "Median income",
+        y = "Proportion of repeat donors",
+        title = "Proportion of repeat donors per median income of postal codes per year") +
+facet_grid(Year ~.)
+```
+
+
+```{r}
+ 
+ggplot(data= filtered_paavo, mapping=aes(y = prop_new_donors, x = proportion_inhabitants_with_higher_education, colour=eligible_population))+
+geom_point(mapping=aes(y = prop_new_donors, x = proportion_inhabitants_with_higher_education, colour=eligible_population))+
+  scale_x_log10() + 
+geom_smooth(aes(y = prop_new_donors, x = proportion_inhabitants_with_higher_education)) +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
+  facet_grid(Year~.)
+
+```
+```{r}
+ggplot(data= filtered_paavo, mapping=aes(y = prop_repeat_donors, x = proportion_inhabitants_with_higher_education, colour=eligible_population))+
+geom_point(mapping=aes(y = prop_repeat_donors, x = proportion_inhabitants_with_higher_education, colour=eligible_population))+
+  scale_x_log10() + 
+geom_smooth(aes(y = prop_repeat_donors, x = proportion_inhabitants_with_higher_education)) +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
+  facet_grid(Year~.)
+```
+```{r}
+ggplot(data= filtered_paavo, mapping=aes(y = prop_donors, x = averageincome))+
+geom_point(mapping=aes(y = prop_donors, x = medianincome, colour=eligible_population))+
+  scale_x_log10() + 
+geom_smooth(aes(y = prop_donors, x = averageincome)) +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
+  facet_grid(Year~.)
+```
+
+```{r}
+
+
+```
+
