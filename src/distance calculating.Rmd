@@ -1,0 +1,128 @@
+---
+title: "Distance calculating"
+author: "Ilpo Arminen"
+date: "8/6/2019"
+output: github_document
+---
+
+
+# This data is downloaded from geonames website.(*add blaablaa*)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+ df <- readr::read_tsv("coordinates.txt",col_names= FALSE)
+load("../data/paavodata.rdata")
+load("../data/ilposdata.rdata")
+load("/home/ilpo/Paavo/data/site_codes.rdata")
+```
+#loadin the file 
+```{r}
+ df <- readr::read_tsv("coordinates.txt",col_names= FALSE)
+# This is downloaded from geonames.com. It has all the zip codes of Finland with longitude and latitude. 
+
+  Uusimaa_coordinates <- df %>% 
+dplyr::select(-X1,-X5, -X7,-X9,-X12,-X6,-X8) %>%  # unnecessary variables
+filter(X4 == "Uusimaa") %>%               #Filtered to uusimaa region
+rename(zip=X2, city= X3, region=X4, longitude= X10, latitude= X11) #renaming 
+
+```
+
+
+
+
+
+
+
+```{r}
+library(sp)
+library(geosphere)
+library(tidyverse)
+```
+
+# This is here for later use and hopingly can help me to calculate the distances faster.
+
+```{r}
+
+\name{spDistsN1}
+\alias{spDistsN1}
+\alias{spDists}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{Euclidean or Great Circle distance between points}
+\description{
+  The function returns a vector of distances between a matrix of 2D points, first column longitude, second column latitude, and a single 2D point, using Euclidean or Great Circle distance (WGS84 ellipsoid) methods.
+}
+\usage{
+spDistsN1(pts, pt, longlat = FALSE)
+spDists(x, y = x, longlat = FALSE)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{pts}{A matrix of 2D points, first column x/longitude, second column y/latitude, or a SpatialPoints or SpatialPointsDataFrame object}
+  \item{pt}{A single 2D point, first value x/longitude, second value y/latitude, or a SpatialPoints or SpatialPointsDataFrame object with one point only}
+  \item{x}{A matrix of n-D points with row denoting points, first column x/longitude, second column y/latitude, or a Spatial object that has a coordinates method}
+  \item{y}{A matrix of n-D points with row denoting points, first column x/longitude, second column y/latitude, or a Spatial object that has a coordinates method}
+  \item{longlat}{if FALSE, Euclidean distance, if TRUE Great Circle distance}
+}
+
+\value{
+\code{spDistsN1} returns a numeric vector of distances in the metric of the points if longlat=FALSE, or in kilometers if longlat=TRUE.
+
+\code{spDists} returns a full matrix of distances in the metric of the points if longlat=FALSE, or in kilometers if longlat=TRUE; it uses \code{spDistsN1} in case points are two-dimensional. In case of \code{spDists(x,x)}, it will compute 
+all n x n distances, not the sufficient n x (n-1).
+}
+
+\note{The function can also be used to find a local kilometer equivalent to a plot scaled in decimal degrees in order to draw a scale bar.  }
+\references{\url{http://home.att.net/~srschmitt/script_greatcircle.html}}
+\author{Roger Bivand, Edzer Pebesma}
+
+
+\seealso{\code{\link{is.projected}}}
+\examples{
+ll <- matrix(c(5, 6, 60, 60), ncol=2)
+km <- spDistsN1(ll, ll[1,], longlat=TRUE)
+zapsmall(km)
+utm32 <- matrix(c(276.9799, 332.7052, 6658.1572, 6655.2055), ncol=2)
+spDistsN1(utm32, utm32[1,])
+dg <- spDistsN1(ll, ll[1,])
+dg
+dg[2]/km[2]
+data(meuse)
+coordinates(meuse) <- c("x", "y")
+res <- spDistsN1(meuse, meuse[1,])
+summary(res)
+}
+\keyword{spatial}
+```
+
+
+
+
+## Example 
+#The haversine formula determines the great-circle distance between two points on a sphere given their longitudes and latitudes. Important in navigation, it is a special case of a more general formula in spherical trigonometry, the law of haversines, that relates the sides and angles of spherical triangles.# Haversine Formula (from R.W. Sinnott, "Virtues of the Haversine", Sky and Telescope, vol. 68, no. 2, 1984, p. 159):
+
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin^2(dlat/2) + cos(lat1) * cos(lat2) * sin^2(dlon/2)
+    c = 2 * arcsin(min(1,sqrt(a)))
+    d = R * c
+
+
+```{r}
+                  #  Kamppi              Punavuori
+distHaversine(p1=c(60.1714, 24.9316), p2= c( 60.1632, 24.9391))
+                  #Kamppi                 Kiminkylä
+distHaversine(p1= c(60.1714 , 24.9316), p2= c(60.7121 , 26.2904))
+```
+# Atleast distHaversine function seems to work allright. Good news... 
+# I need to merge uusimaa_coordinates df and site_codes data with created processed_site_Paavo. 
+
+#Filtering the site_codes_data
+
+```{r}
+site_zip <- site_codes_data %>% 
+select(c(1,2,5)) %>% #selecting only Site, site name and site zip. 
+rename(Site=code, nimi=site_name, site_zip=zip)   # renamed to match variable names in processed paavo data 
+
+#Paavodata has common variable in Uusimaa_coordinates with zip and with site_zip site so lets join with that(?)
+
+```
+
