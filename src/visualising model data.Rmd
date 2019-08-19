@@ -1,0 +1,282 @@
+---
+title: "Visualising model data"
+author: "Ilpo Arminen"
+date: "8/16/2019"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(knitr)
+library(viridis)
+library(table1)
+```
+
+```{r}
+load("/home/ilpo/Paavo/data/model_data.RData")
+```
+
+
+```{r, results='asis}
+
+label(model_data$medianincome)  <- "Median income of household per postal code"
+label(model_data$averageincome) <- "Average income of household per postal code"
+label(model_data$proportion_inhabitants_with_higher_education)  <- "Share of inhabitants with higher education per postal code"
+label(model_data$prop_donors) <- "Proportion of donors per postal code "
+label(model_data$nb_fixed_donations_per_zip) <- "Proportion of donations per postal code"
+label(model_data$nb_fixed_donors_per_zip) <- "Number of donors per zip"
+label(model_data$proportion_inhabitants_with_higher_education) <- "Proportion_inhabitants_with_higher_education"
+label(model_data$nb_fixed_repeat_donors) <- "Number of donors who donated more than once per zip"
+label(model_data$nb_fixed_first_time_donors) <- "Number of first time donors per zip"
+label(model_data$nb_fixed_donation_per_act_donor) <- "Number of donations divided by numbers of donor per zip"
+label(model_data$eligible_population) <- "Number of residents per zip who is suitable for donating blood"
+units(model_data$medianincome) <- "Euro"
+units(model_data$averageincome) <- "Euro" 
+
+ table1(~prop_donors + eligible_population + nb_fixed_donors_per_zip + nb_fixed_donations_per_zip + nb_fixed_donors_per_zip + medianincome + averageincome + proportion_inhabitants_with_higher_education + proportion_inhabitants_with_higher_education + prop_repeat_donors + prop_new_donors + prop_donors + nb_fixed_donation_per_act_donor,data = model_data, overall = "Total", topclass="Rtable1-grid Rtable1-center")
+
+
+```
+```{r}
+kable(model_data)
+```
+
+# Distribution of population of postal codes. 
+```{r}
+ggplot(data=model_data, mapping = aes(x= eligible_population))+
+geom_histogram (binwidth= 1000)
+```
+### Shape of proportion of donors variable
+```{r}
+ggplot(data=model_data, mapping = aes(x= prop_donors))+
+geom_histogram ()  
+#scale_x_log10()
+```
+##  Change to logarithmic scale  helps  with the skewness.
+
+```{r}
+ggplot(data=model_data, mapping = aes(x= prop_donors))+
+geom_histogram ()  +
+scale_x_log10()
+```
+#
+```{r}
+ggplot(data= model_data, mapping= aes(x=minDist)) + 
+geom_histogram()
+```
+
+
+
+#  Proportion of donors and median income
+```{r}
+ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors))+
+geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
+geom_smooth (method = "gam") + 
+scale_x_log10() 
+#facet_grid(Year~.)
+```
+
+
+
+
+## proportion of donors, median income and distance
+```{r}
+ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors, color= minDist))+
+geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
+facet_grid(Year~.)
+
+```
+
+###  proportion of donors, median income and population
+```{r}
+ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors, color= eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+
+
+```
+####proportion of new donors plus median income +  (distance)
+
+
+```{r}
+ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_new_donors, color= minDist))+
+geom_point(mapping = aes(x= medianincome, y= prop_new_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+
+```
+Proportion of  new donors, median income + (population)
+
+```{r}
+ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_new_donors, color= eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_new_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+##### proportion of  repeat donors, median income + (population)
+```{r}
+ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_repeat_donors, color= eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+
+##### Proportion of repeat donors, median income, colored by min distance
+```{r}
+ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_repeat_donors, color= eligible_population))+
+geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+# proportion of donors and average income, colored by eligible population
+```{r}
+ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_donors, color= eligible_population))+
+geom_point(mapping = aes(x= averageincome, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+##average income and distance 
+```{r}
+ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_donors, color= minDist))+
+geom_point(mapping = aes(x= averageincome, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+####  proportion of new donors and average income (population)
+```{r}
+ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_new_donors, color= eligible_population))+
+geom_point(mapping = aes(x= averageincome, y= prop_new_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+Proportion of new donors  and average income (distance)
+```{r}
+ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_new_donors, color= minDist))+
+geom_point(mapping = aes(x= averageincome, y= prop_new_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+
+
+#####  proportion of repeat donors (population)
+```{r}
+ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_repeat_donors, color= minDist))+
+geom_point(mapping = aes(x= averageincome, y= prop_repeat_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+#Higher education and prop donor
+```{r}
+ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors))+
+geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+## Proportion of donors, higher education and distance
+```{r}
+ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors, color= minDist))+
+geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+### Propportion of donors, higher education and population
+```{r}
+ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors, color= eligible_population))+
+geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+
+##### proportion of new donors, higher education and eligible population
+```{r}
+ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_new_donors, color= eligible_population))+
+geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_new_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+####  proportion of repeat donors, higher education and distance 
+```{r}
+ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_repeat_donors, color=minDist))+
+geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_repeat_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+
+#####  proportion of repeat donors, higher education and eligible population
+```{r}
+ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_repeat_donors, color=eligible_population))+
+geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_repeat_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+facet_grid(Year~.)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

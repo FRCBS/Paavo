@@ -123,7 +123,8 @@ by = c("zip", "Year")) %>%
 
 
 fix_preprocessed$nb_fixed_first_time_donors[is.na(fix_preprocessed$nb_fixed_first_time_donors)] <- 0
-fix_preprocessed$nb_fixed_repeat_donors[is.na(fix_preprocessed$nb_fixed_repeat_donors)] <- 0   # Deleting missing values
+fix_preprocessed$nb_fixed_repeat_don
+ors[is.na(fix_preprocessed$nb_fixed_repeat_donors)] <- 0   # Deleting missing values
 ```
 
 
@@ -172,99 +173,9 @@ summary(processed_site_paavo)
 
 
 
-## Make a variable which divides sites into mobile and fixed sites
 
 ```{r}
-
-fixmob <- ilposdata %>% 
-mutate(Year = year(dateonly)) %>%
-filter(donat_phleb == "K") %>%
-filter(Year == 2017| Year== 2018) 
-
-
-colnames(fixmob )[grep("site",colnames(fixmob ))] <- "Site"
-#Get the sites that are on the data
-fixmob$Site <- recode(fixmob$Site,
-                      H0091="Kivihaka",
-                      H0092='Kivihaka',
-                      H0093='Sanomatalo',
-                      H0096='Espoo',
-                      K0297='Kuopio',
-                      L0564='Oulu',
-                      T0179='Jyväskylä',
-                      T0398='Lahti',
-                      T0743='Seinäjoki',
-                      T0837='Tampere',
-                      U0853='Turku',
-                      .default = levels(fixmob$Site)
-                      )
-#Add the mobile units in
-fixmob$Site  <- as.character(fixmob$Site)
-fixmob$Site[grep("^H1\\d{3}$",fixmob$Site ,perl = TRUE)] <- "Kivihaka mobile"
-fixmob$Site [grep("^K1\\d{3}$",fixmob$Site ,perl = TRUE)] <- "Kuopio mobile"
-fixmob$Site [grep("^L1\\d{3}$",fixmob$Site ,perl = TRUE)] <- "Oulu mobile"
-fixmob$Site [grep("^S1\\d{3}$",fixmob$Site ,perl = TRUE)] <- "Seinäjoki mobile"
-fixmob$Site [grep("^T1\\d{3}$",fixmob$Site ,perl = TRUE)] <- "Tampere mobile"
-fixmob$Site [grep("^U1\\d{3}$",fixmob$Site ,perl = TRUE)] <- "Turku mobile"
-#unknown places 
-if (length(table(nchar(as.character(fixmob$Site)) == 0)) > 1 ) {
-fixmob$Site [nchar(as.character(fixmob$Site )) == 0 ] <-  "unknown"}
-# new variable 
-fixmob$mobile <- recode(fixmob$Site,
-                          Kivihaka="fixed site",
-                          Sanomatalo="fixed site",
-                          Espoo="fixed site",
-                          Kuopio="fixed site",
-                          Oulu="fixed site",
-                          Jyväskylä="fixed site",
-                          Lahti="fixed site",
-                          Seinäjoki="fixed site",
-                          Tampere="fixed site",
-                          Turku="fixed site",
-                          unknown="fixed site",
-                          
-                          "Kivihaka mobile"="mobile site",
-                          "Kuopio mobile"="mobile site",
-                          "Oulu mobile"="mobile site",
-                          "Seinäjoki mobile"="mobile site",
-                          "Tampere mobile"="mobile site",
-                          "Turku mobile"="mobile site",.default = levels(fixmob$Site))
-
-
-```
-
-
-
- #Compute distances between each zipcode and each mobile/fixed site. Then choose for each zipcode the closest fixed and the closest mobile.
-
-
-
-
-
-
-
-
-
-## Get the number of donation opportunities for each mobile site in a years of interest
-
-```{r}
-
-```
-
-
-
-
-for each zipcode compute proportion of donations made in fixed site.
-```{r}
-
-```
-
-
-
-
-
-```{r}
-#save(sitepreprosessed_paavo,
-#file = paste0("name.",Sys.Date(),".RData"))
+save(processed_site_paavo,
+file = paste0("name.",Sys.Date(),".RData"))
 ```
 

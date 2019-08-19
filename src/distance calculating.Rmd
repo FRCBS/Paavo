@@ -15,6 +15,14 @@ load("../data/ilposdata.rdata")
 load("/home/ilpo/Paavo/data/site_codes.rdata")
 ```
 #loadin the file 
+
+
+
+```{r}
+library(tidyverse)
+library(geosphere)
+```
+
 ```{r}
  df <- readr::read_tsv("coordinates.txt",col_names= FALSE)
 # This is downloaded from geonames.com. It has all the zip codes of Finland with longitude and latitude. 
@@ -32,66 +40,6 @@ rename(zip=X2, city= X3, region=X4, longitude= X10, latitude= X11) #renaming
 
 
 
-```{r}
-library(sp)
-library(geosphere)
-library(tidyverse)
-```
-
-# This is here for later use and hopingly can help me to calculate the distances faster.
-
-```{r}
-
-\name{spDistsN1}
-\alias{spDistsN1}
-\alias{spDists}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{Euclidean or Great Circle distance between points}
-\description{
-  The function returns a vector of distances between a matrix of 2D points, first column longitude, second column latitude, and a single 2D point, using Euclidean or Great Circle distance (WGS84 ellipsoid) methods.
-}
-\usage{
-spDistsN1(pts, pt, longlat = FALSE)
-spDists(x, y = x, longlat = FALSE)
-}
-%- maybe also 'usage' for other objects documented here.
-\arguments{
-  \item{pts}{A matrix of 2D points, first column x/longitude, second column y/latitude, or a SpatialPoints or SpatialPointsDataFrame object}
-  \item{pt}{A single 2D point, first value x/longitude, second value y/latitude, or a SpatialPoints or SpatialPointsDataFrame object with one point only}
-  \item{x}{A matrix of n-D points with row denoting points, first column x/longitude, second column y/latitude, or a Spatial object that has a coordinates method}
-  \item{y}{A matrix of n-D points with row denoting points, first column x/longitude, second column y/latitude, or a Spatial object that has a coordinates method}
-  \item{longlat}{if FALSE, Euclidean distance, if TRUE Great Circle distance}
-}
-
-\value{
-\code{spDistsN1} returns a numeric vector of distances in the metric of the points if longlat=FALSE, or in kilometers if longlat=TRUE.
-
-\code{spDists} returns a full matrix of distances in the metric of the points if longlat=FALSE, or in kilometers if longlat=TRUE; it uses \code{spDistsN1} in case points are two-dimensional. In case of \code{spDists(x,x)}, it will compute 
-all n x n distances, not the sufficient n x (n-1).
-}
-
-\note{The function can also be used to find a local kilometer equivalent to a plot scaled in decimal degrees in order to draw a scale bar.  }
-\references{\url{http://home.att.net/~srschmitt/script_greatcircle.html}}
-\author{Roger Bivand, Edzer Pebesma}
-
-
-\seealso{\code{\link{is.projected}}}
-\examples{
-ll <- matrix(c(5, 6, 60, 60), ncol=2)
-km <- spDistsN1(ll, ll[1,], longlat=TRUE)
-zapsmall(km)
-utm32 <- matrix(c(276.9799, 332.7052, 6658.1572, 6655.2055), ncol=2)
-spDistsN1(utm32, utm32[1,])
-dg <- spDistsN1(ll, ll[1,])
-dg
-dg[2]/km[2]
-data(meuse)
-coordinates(meuse) <- c("x", "y")
-res <- spDistsN1(meuse, meuse[1,])
-summary(res)
-}
-\keyword{spatial}
-```
 
 
 
@@ -109,20 +57,163 @@ summary(res)
 ```{r}
                   #  Kamppi              Punavuori
 distHaversine(p1=c(60.1714, 24.9316), p2= c( 60.1632, 24.9391))
+
+distVincentyEllipsoid(p1=c(60.1714, 24.9316), p2= c(60.1632, 24.9391))
+
+
+
                   #Kamppi                 Kiminkylä
 distHaversine(p1= c(60.1714 , 24.9316), p2= c(60.7121 , 26.2904))
 ```
-# Atleast distHaversine function seems to work allright. Good news... 
-# I need to merge uusimaa_coordinates df and site_codes data with created processed_site_Paavo. 
+## Atleast distHaversine function seems to work allright. Good news... 
 
-#Filtering the site_codes_data
+
+## Filtering the site_codes_data
 
 ```{r}
 site_zip <- site_codes_data %>% 
 select(c(1,2,5)) %>% #selecting only Site, site name and site zip. 
-rename(Site=code, nimi=site_name, site_zip=zip)   # renamed to match variable names in processed paavo data 
+rename(Site=code, name=site_name, site_zip=zip)   # renamed to match variable names in processed paavo data 
 
-#Paavodata has common variable in Uusimaa_coordinates with zip and with site_zip site so lets join with that(?)
+
 
 ```
+
+```{r}
+
+
+new_data <- left_join(processed_site_paavo, Uusimaa_coordinates, by= c("zip")) #seems to be ok. Now preprocessed file has coordinates
+
+```
+
+
+
+```{r}
+
+#distm(c(lon1, lat1), c(lon2, lat2), fun = distHaversine)
+#distHaversine()
+#distMeeus()
+#distRhumb()
+#distVincentyEllipsoid()
+#distVincentySphere()
+
+#map(x=new_data,distVincentyEllipsoid(p1= 60.2106, 24.9035, p2= longitude, latitude))
+  
+
+```
+
+
+
+
+```{r}
+#Kivihaka long	60.2106	 lat 24.9035
+```
+
+
+```{r}
+get_geo_distance = function(long1, lat1, long2, lat2, units = "miles") {
+  loadNamespace("purrr")
+  loadNamespace("geosphere")
+  longlat1 = purrr::map2(long1, lat1, function(x,y) c(x,y))
+  longlat2 = purrr::map2(long2, lat2, function(x,y) c(x,y))
+  distance_list = purrr::map2(longlat1, longlat2, function(x,y) geosphere::distHaversine(x, y))
+  distance_m = list_extract(distance_list, position = 1)
+  if (units == "km") {
+    distance = distance_m / 1000.0;
+  }
+  else if (units == "miles") {
+    distance = distance_m / 1609.344
+  }
+  else {
+    distance = distance_m
+    # This will return in meter as same way as distHaversine function. 
+  }
+    distance
+}  
+```
+
+# example but not really good one 
+
+```{r}
+list1 <- data.frame(longitude = c(80.15998, 72.89125, 77.65032, 77.60599, 
+                                  72.88120, 76.65460, 72.88232, 77.49186, 
+                                  72.82228, 72.88871), 
+                    latitude = c(12.90524, 19.08120, 12.97238, 12.90927, 
+                                 19.08225, 12.81447, 19.08241, 13.00984,
+                                 18.99347, 19.07990))
+list2 <- data.frame(longitude = c(72.89537, 77.65094, 73.95325, 72.96746, 
+                                  77.65058, 77.66715, 77.64214, 77.58415,
+                                  77.76180, 76.65460), 
+                    latitude = c(19.07726, 13.03902, 18.50330, 19.16764, 
+                                 12.90871, 13.01693, 13.00954, 12.92079,
+                                 13.02212, 12.81447)) 
+                   # locality = c("A", "A", "B", "B", "C", "C", "C", "D", "D", "E"))
+                    
+                    
+
+
+# create distance matrix
+mat <- distm(list1[,c('longitude','latitude')], list2[,c('longitude','latitude')], fun=distVincentyEllipsoid)
+
+# assign the name to the point in list1 based on shortest distance in the matrix
+#list1$locality <- list2$locality[max.col(-mat)]                    
+                    
+  mat                  
+                    
+```
+# 
+```{r}                          
+                                #etu-töölö
+list3 <- data.frame(longitude = c(60.2106),
+                      latitude = c(24.9035))
+                                #punavuori    #kaartinkaupunki #kaivopuisto
+list4 <- data.frame(longitude = c(60.1632, 60.1645, 60.1578),
+                  latitude= c(24.9391, 24.9487,24.9525))
+
+
+
+mat2 <- distm(list3[,c('longitude','latitude')], list4[,c('longitude','latitude')], fun=distVincentyEllipsoid)
+mat2
+```
+
+
+
+
+```{r}
+earth.dist <- function (long1, lat1, long2, lat2)
+{
+rad <- pi/180
+a1 <- lat1 * rad
+a2 <- long1 * rad
+b1 <- lat2 * rad
+b2 <- long2 * rad
+dlon <- b2 - a2
+dlat <- b1 - a1
+a <- (sin(dlat/2))^2 + cos(a1) * cos(b1) * (sin(dlon/2))^2
+c <- 2 * atan2(sqrt(a), sqrt(1 - a))
+R <- 6378.145
+d <- R * c
+return(d)
+}
+```
+
+```{r}
+teppo <-  pmap(new_data, ~earth.dist(long1=60.2106, lat1=24.9035, long2=new_data$longitude, lat2 =new_data$latitude )) 
+
+
+as.data.frame.list(teppo)
+teppo
+
+
+
+```
+#Calculating distance between two points using the distm function inside mutate
+```{r}
+jaffattulloojahelematpaukkuu <- new_data %>% 
+rowwise () %>% 
+  mutate(Dist = pmap_dfr(., ~
+           distm(x = longitude, y = latitude, fun = distHaversine)))
+```
+
+
 
