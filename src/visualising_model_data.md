@@ -7,14 +7,14 @@ Ilpo Arminen
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ───────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.2.0          ✔ purrr   0.3.2     
     ## ✔ tibble  2.1.3          ✔ dplyr   0.8.2     
     ## ✔ tidyr   0.8.3.9000     ✔ stringr 1.4.0     
     ## ✔ readr   1.3.1          ✔ forcats 0.4.0
 
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -57,7 +57,7 @@ load("/home/ilpo/Paavo/data/model_data.RData")
 label(model_data$medianincome)  <- "Median income of household per postal code"
 label(model_data$averageincome) <- "Average income of household per postal code"
 label(model_data$proportion_inhabitants_with_higher_education)  <- "Share of inhabitants with higher education per postal code"
-label(model_data$prop_donors) <- "Proportion of donors per postal code "
+label(model_data$prop_donors) <- "Proportion of donors per postal code."
 label(model_data$nb_fixed_donations_per_zip) <- "Proportion of donations per postal code"
 label(model_data$nb_fixed_donors_per_zip) <- "Number of donors per zip"
 label(model_data$proportion_inhabitants_with_higher_education) <- "Proportion_inhabitants_with_higher_education"
@@ -71,7 +71,7 @@ units(model_data$averageincome) <- "Euro"
  table1(~prop_donors + eligible_population + nb_fixed_donors_per_zip + nb_fixed_donations_per_zip + nb_fixed_donors_per_zip + medianincome + averageincome + proportion_inhabitants_with_higher_education + proportion_inhabitants_with_higher_education + prop_repeat_donors + prop_new_donors + prop_donors + nb_fixed_donation_per_act_donor,data = model_data, overall = "Total", topclass="Rtable1-grid Rtable1-center")
 ```
 
-    ## [1] "<table class=\"Rtable1-grid Rtable1-center\">\n<thead>\n<tr>\n<th class='rowlabel firstrow lastrow'></th>\n<th class='firstrow lastrow'><span class='stratlabel'>Total<br><span class='stratn'>(n=302)</span></span></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Proportion of donors per postal code </span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.0315 (0.0110)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.0308 [0.00846, 0.0647]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Number of residents per zip who is suitable for donating blood</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>4960 (2810)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>4440 [1110, 15700]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Number of donors per zip</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>145 (86.9)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>117 [53.0, 552]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Proportion of donations per postal code</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>248 (143)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>205 [100, 929]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Median income of household per postal code<span class='varunits'> (Euro)</span></span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>23700 (3320)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>23500 [16400, 33100]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Average income of household per postal code<span class='varunits'> (Euro)</span></span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>27200 (5770)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>25700 [17900, 53700]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Proportion_inhabitants_with_higher_education</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.417 (0.156)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.408 [0.132, 0.770]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>prop_repeat_donors</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.0279 (0.00977)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.0266 [0.00812, 0.0557]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>prop_new_donors</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.00363 (0.00173)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.00337 [0.000334, 0.0108]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Number of donations divided by numbers of donor per zip</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>1.73 (0.145)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>1.71 [1.41, 2.32]</td>\n</tr>\n</tbody>\n</table>\n"
+    ## [1] "<table class=\"Rtable1-grid Rtable1-center\">\n<thead>\n<tr>\n<th class='rowlabel firstrow lastrow'></th>\n<th class='firstrow lastrow'><span class='stratlabel'>Total<br><span class='stratn'>(n=302)</span></span></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Proportion of donors per postal code.</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.0315 (0.0110)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.0308 [0.00846, 0.0647]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Number of residents per zip who is suitable for donating blood</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>4960 (2810)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>4440 [1110, 15700]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Number of donors per zip</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>145 (86.9)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>117 [53.0, 552]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Proportion of donations per postal code</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>248 (143)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>205 [100, 929]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Median income of household per postal code<span class='varunits'> (Euro)</span></span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>23700 (3320)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>23500 [16400, 33100]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Average income of household per postal code<span class='varunits'> (Euro)</span></span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>27200 (5770)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>25700 [17900, 53700]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Proportion_inhabitants_with_higher_education</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.417 (0.156)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.408 [0.132, 0.770]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>prop_repeat_donors</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.0279 (0.00977)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.0266 [0.00812, 0.0557]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>prop_new_donors</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.00363 (0.00173)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.00337 [0.000334, 0.0108]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Number of donations divided by numbers of donor per zip</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>1.73 (0.145)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>1.71 [1.41, 2.32]</td>\n</tr>\n</tbody>\n</table>\n"
 
 ``` r
 #kable(model_data)
@@ -138,7 +138,7 @@ geom_histogram()
 ``` r
 ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors))+
 geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
-geom_smooth (method = "gam") + 
+geom_smooth (method = "loess") + 
 scale_x_log10() +
   labs(x = "Median income",
         y = "Proportion of donors",
@@ -150,7 +150,7 @@ scale_x_log10() +
 ``` r
 #facet_grid(Year~.)
 
-#There seems to be quite a number of areas with high proportion of donors and lower than 20k median income. After checking this, it seems that areas are all from Lahti. Also need to pay attention that im not visualising the years separately, so  there are same data points with different year. Besides Lahti, it seems that there is  (mild)  positive correlation between median income and proportion of donors, but only to some degree so that richest ares do not have highest prop donors. 
+#There seems to be quite a number of areas with high proportion of donors and lower than 20k median income. After checking this, it seems that areas are all from Lahti. Also need to pay attention that im not visualising the years separately, so  there are same data points with different year. it seems that there could be  (mild)  positive correlation between median income and proportion of donors, but only to some degree so that richest ares do not have highest prop donors and there are areas with high prop of donors and less than 20k median income, so there might be even negative linear correlation.  I would guess that Helsinki would fit to linear model better, than the whole dataset.
 ```
 
 ## proportion of donors and median income with zip labels.
@@ -170,7 +170,6 @@ mapping = aes(label = name)) +
 ![](visualising_model_data_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
-#facet_grid(Year~.)
 #facet_grid(Year ~.)
 
 # This if helpful for seeing that high proportion of donors seems to be areas near the fixed sites, atleast in Ruskeasuo, Etelä-Haaga and Lahti Asemanseutu. 
@@ -199,7 +198,7 @@ facet_grid(Year~.)
 ![](visualising_model_data_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
-# It seems that distance to donation site does not matter as much as i thought. This could be matter of minDIst scale which goes in this picture  from 400 meters to almost 3km. 
+# It seems that distance to donation site does not matter as much as i thought. This could be matter of minDIst categories that hides the trend. I should maybe change the colors so i coulld see the differences easier. 
 ```
 
 ### proportion of donors, median income and population
@@ -242,7 +241,7 @@ facet_grid(Year~.)
     ##     super:  <ggproto object: Class FacetGrid, Facet, gg>
 
 ``` r
-# High number of  donors comes from smaller postal codes. 
+# Highest proportion of donors tend to come from smaller postal codes which sounds pretty reasonable, since there need to be smaller amount of donors per population. 
 ```
 
 \#proportion of new donors plus median income +
@@ -267,6 +266,11 @@ facet_grid(Year~.)
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
 ![](visualising_model_data_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+``` r
+# So this looks new donors and distance per median income. It seems that new donors do not live nearby of donation sites, so it looks pretty similar to all donors plot.  Trend might be sligtly negative.
+```
+
 Proportion of new donors, median income +
 population
 
@@ -285,6 +289,10 @@ facet_grid(Year~.)
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
 ![](visualising_model_data_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+``` r
+# New donors also tend to come from postal codes from smaller population. 
+```
 
 # proportion of repeat donors, median income + distance
 
@@ -430,8 +438,8 @@ facet_grid(Year~.)
 
 ![](visualising_model_data_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
-\#Higher education and prop
-donor
+\#Higher education and proportion of
+donors
 
 ``` r
 ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors))+
@@ -448,6 +456,10 @@ facet_grid(Year~.)
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
 ![](visualising_model_data_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+``` r
+#  Median income and tertiary education plots seems to be pretty similar. Postal codes from Lahti doesn't really fit into linear trend. Although smoothing curve tend to have a little bit more linearity curve before it drops down.  There might be some stronger correlation than with proportion of donors and median income.  
+```
 
 ## Proportion of donors, higher education and distance
 
@@ -471,11 +483,15 @@ facet_grid(Year~.)
 
 ![](visualising_model_data_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
+``` r
+# Distance doesn't seems to have a lot of effect  on this plot. There are some data points from close distances, but there isn't really any kind of trend that favors close distance donations. 
+```
+
 ### Propportion of donors, higher education and population
 
 ``` r
-ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors, color= eligible_population))+
-geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_donors)) +
+ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors, color= eligible_population)) +
+geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_donors))  +
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
@@ -489,6 +505,10 @@ facet_grid(Year~.)
 
 ![](visualising_model_data_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
+``` r
+# Population size of postal code tends to favor high number of donors in smaller places. This is in line with common sense since donations are measured by dividing the population size with number of donors.  Highest number of tertiary educated inhabitants behave similar to those highest number of median income areas, where there are quite a downfall in donation trend. 
+```
+
 ##### proportion of new donors, higher education and eligible population
 
 ``` r
@@ -496,7 +516,7 @@ ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_educ
 geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_new_donors)) +
 geom_smooth () + 
 scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+scale_color_viridis(discrete = FALSE,direction = -1,trans="log") + 
    labs(x = "Proportion of inhabitants with higher education per postal code",
         y = "Proportion of new donors",
         title = "Proportion of new donors and higher education per postal code") +
@@ -546,3 +566,89 @@ facet_grid(Year~.)
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
 ![](visualising_model_data_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+
+``` 
+                          # Distance and proportion of donors 
+```
+
+``` r
+ggplot(data=model_data, mapping = aes(x= minDist, y= prop_donors))+
+geom_point(mapping = aes(x= minDist, y= prop_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+labs(x = "Distance to closest donation site",
+        y = "Proportion of donors",
+        title = "Proportion of  donors and distance to closest donation site") +
+facet_grid(Year~.)
+```
+
+    ## Warning: Transformation introduced infinite values in continuous x-axis
+    
+    ## Warning: Transformation introduced infinite values in continuous x-axis
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+    ## Warning: Removed 4 rows containing non-finite values (stat_smooth).
+
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
+
+``` r
+# So i could not see it from the pictures where distance was only coloring feature, but plotting distance versus proportion of donors shows pretty agressive negatively linear trend.  Ith shows that when distance increases the proportion of donors decreases. 
+```
+
+## Distance and proportion of repeated donors
+
+``` r
+ggplot(data=model_data, mapping = aes(x= minDist, y= prop_repeat_donors))+
+geom_point(mapping = aes(x= minDist, y= prop_repeat_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+  labs(x = "Distance to closest donation site",
+        y = "Proportion of repeat donors",
+        title = "Proportion of  repeat donors and distance to closest donation site") +
+facet_grid(Year~.)
+```
+
+    ## Warning: Transformation introduced infinite values in continuous x-axis
+    
+    ## Warning: Transformation introduced infinite values in continuous x-axis
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+    ## Warning: Removed 4 rows containing non-finite values (stat_smooth).
+
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+
+``` r
+# Same negative trend is visible on repeated donors also. 
+```
+
+### Distance and proportion of new donors
+
+``` r
+ggplot(data=model_data, mapping = aes(x= minDist, y= prop_new_donors))+
+geom_point(mapping = aes(x= minDist, y= prop_repeat_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+    labs(x = "Distance to closest donation site",
+        y = "Proportion of new donors",
+        title = "Proportion of  new donors and distance to closest donation site") +
+facet_grid(Year~.)
+```
+
+    ## Warning: Transformation introduced infinite values in continuous x-axis
+    
+    ## Warning: Transformation introduced infinite values in continuous x-axis
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+    ## Warning: Removed 4 rows containing non-finite values (stat_smooth).
+
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
+
+``` r
+# New donors do not fit into the same negative trend than all the donors and repeated donors and this plot looks pretty wierd because of that. 
+```
