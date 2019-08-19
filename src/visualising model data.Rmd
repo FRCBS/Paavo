@@ -17,8 +17,9 @@ library(table1)
 load("/home/ilpo/Paavo/data/model_data.RData")
 ```
 
+# Table one from model data
 
-```{r, results='asis}
+```{r}
 
 label(model_data$medianincome)  <- "Median income of household per postal code"
 label(model_data$averageincome) <- "Average income of household per postal code"
@@ -39,44 +40,73 @@ units(model_data$averageincome) <- "Euro"
 
 ```
 ```{r}
-kable(model_data)
+#kable(model_data)
 ```
 
-# Distribution of population of postal codes. 
+# Distribution of eligible population variable
 ```{r}
 ggplot(data=model_data, mapping = aes(x= eligible_population))+
 geom_histogram (binwidth= 1000)
 ```
-### Shape of proportion of donors variable
+### Distribution of proportion of donors variable
 ```{r}
 ggplot(data=model_data, mapping = aes(x= prop_donors))+
 geom_histogram ()  
 #scale_x_log10()
 ```
-##  Change to logarithmic scale  helps  with the skewness.
+##  Distribution of proportion of donors variable on logarithmic scale
 
 ```{r}
 ggplot(data=model_data, mapping = aes(x= prop_donors))+
 geom_histogram ()  +
 scale_x_log10()
 ```
-#
+### Distribution of minimum distance variable
 ```{r}
 ggplot(data= model_data, mapping= aes(x=minDist)) + 
 geom_histogram()
 ```
+Distiribution of proportion_inhabitants_with_higher_education variable
+```{r}
+ggplot(data= model_data, mapping= aes(x=proportion_inhabitants_with_higher_education )) + 
+geom_histogram()
+```
 
 
-
-#  Proportion of donors and median income
+  #Proportion of donors and median income
 ```{r}
 ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors))+
 geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
 geom_smooth (method = "gam") + 
-scale_x_log10() 
+scale_x_log10() +
+  labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income of postal codes")
 #facet_grid(Year~.)
+
+#There seems to be quite a number of areas with high proportion of donors and lower than 20k median income. After checking this, it seems that areas are all from Lahti. Also need to pay attention that im not visualising the years separately, so  there are same data points with different year. Besides Lahti, it seems that there is  (mild)  positive correlation between median income and proportion of donors, but only to some degree so that richest ares do not have highest prop donors. 
 ```
 
+
+
+## proportion of donors and median income with zip labels.
+
+```{r}
+
+ ggplot(data = model_data,
+            mapping = aes(x = medianincome, y = prop_donors))+
+geom_point(alpha= 0.25) +
+scale_x_log10() + 
+  geom_text(data = model_data ,check_overlap = TRUE, na.rm= TRUE, size=3,
+mapping = aes(label = name)) +
+ labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income of postal codes")
+#facet_grid(Year~.)
+#facet_grid(Year ~.)
+
+# This if helpful for seeing that high proportion of donors seems to be areas near the fixed sites, atleast in Ruskeasuo, Etelä-Haaga and Lahti Asemanseutu. 
+```
 
 
 
@@ -87,7 +117,13 @@ geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
+   labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income and distance to donation site per postal code") +
 facet_grid(Year~.)
+
+# It seems that distance to donation site does not matter as much as i thought. This could be matter of minDIst scale which goes in this picture  from 400 meters to almost 3km. 
+
 
 ```
 
@@ -98,11 +134,17 @@ geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+ labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income and eligible population of postal codes")
+#facet_grid(Year~.)
 facet_grid(Year~.)
 
 
+# High number of  donors comes from smaller postal codes. 
+
 ```
-####proportion of new donors plus median income +  (distance)
+#proportion of new donors plus median income + distance
 
 
 ```{r}
@@ -111,10 +153,13 @@ geom_point(mapping = aes(x= medianincome, y= prop_new_donors)) +
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+   labs(x = "Median income",
+        y = "Proportion of new donors",
+        title = "Proportion of new donors per median income and distance to donation sites of postal codes")+
 facet_grid(Year~.)
 
 ```
-Proportion of  new donors, median income + (population)
+Proportion of  new donors, median income + population
 
 ```{r}
 ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_new_donors, color= eligible_population))+
@@ -122,27 +167,36 @@ geom_point(mapping = aes(x= medianincome, y= prop_new_donors)) +
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+ labs(x = "Median income",
+        y = "Proportion of new donors",
+        title = "Proportion of new donors per median income and eligible population of postal codes")+
 facet_grid(Year~.)
 ```
 
-##### proportion of  repeat donors, median income + (population)
+# proportion of  repeat donors, median income + distance
+```{r}
+ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_repeat_donors, color= minDist))+
+geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+   labs(x = "Median income",
+        y = "Proportion of repeat donors",
+        title = "Proportion of repeat donors per median income and distance to donation site per postal code") + 
+facet_grid(Year~.)
+```
+
+
+##### Proportion of repeat donors, median income, colored by eligible population
 ```{r}
 ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_repeat_donors, color= eligible_population))+
 geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors)) +
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-facet_grid(Year~.)
-```
-
-
-##### Proportion of repeat donors, median income, colored by min distance
-```{r}
-ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_repeat_donors, color= eligible_population))+
-geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+   labs(x = "Median income",
+        y = "Proportion of  repeat donors",
+        title = "Proportion of repeat donors per median income and eligible population per postal code") + 
 facet_grid(Year~.)
 ```
 
@@ -153,6 +207,10 @@ geom_point(mapping = aes(x= averageincome, y= prop_donors)) +
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+   labs(x = "Average income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per average income and eligible population per postal code") +
+#facet_grid(Year~.)
 facet_grid(Year~.)
 ```
 
@@ -163,38 +221,53 @@ geom_point(mapping = aes(x= averageincome, y= prop_donors)) +
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+   labs(x = "Average income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per average income of postal codes")+
 facet_grid(Year~.)
 ```
-
-####  proportion of new donors and average income (population)
-```{r}
-ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_new_donors, color= eligible_population))+
-geom_point(mapping = aes(x= averageincome, y= prop_new_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-facet_grid(Year~.)
-```
-
-Proportion of new donors  and average income (distance)
+#Proportion of new donors  and average income (distance)
 ```{r}
 ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_new_donors, color= minDist))+
 geom_point(mapping = aes(x= averageincome, y= prop_new_donors)) +
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+ labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income and distance to donation site  per postal code") +
 facet_grid(Year~.)
 ```
 
 
 
-#####  proportion of repeat donors (population)
+####  proportion of new donors and average income + population 
+```{r}
+ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_new_donors, color= eligible_population))+
+geom_point(mapping = aes(x= averageincome, y= prop_new_donors)) +
+geom_smooth () + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+ labs(x = "Median income",
+        y = "Proportion of  new donors",
+        title = "Proportion of new donors per average income  and population size per postal code") +
+facet_grid(Year~.)
+```
+
+
+
+
+
+#####  proportion of repeat donors, average income and (population)
 ```{r}
 ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_repeat_donors, color= minDist))+
 geom_point(mapping = aes(x= averageincome, y= prop_repeat_donors)) +
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+   labs(x = "Average income",
+        y = "Proportion of repeat donors",
+        title = "Proportion of repeat donors per average income and distance to donation site  of postal codes")+
 facet_grid(Year~.)
 ```
 
@@ -205,6 +278,9 @@ geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= pr
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+     labs(x = "Proportion of inhabitants with higher education per postal code",
+        y = "Proportion of donors",
+        title = "Proportion of donors and higher education per postal code") +
 facet_grid(Year~.)
 ```
 
@@ -215,6 +291,9 @@ geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= pr
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+   labs(x = "Proportion of inhabitants with higher education per postal code",
+        y = "Proportion of donors",
+        title = "Proportion of donors, higher education and distance to donation site per postal code") +  
 facet_grid(Year~.)
 ```
 
@@ -225,6 +304,9 @@ geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= pr
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+   labs(x = "Proportion of inhabitants with higher education per postal code",
+        y = "Proportion of donors",
+        title = "Proportion of donors, higher education and eligible population  per postal code") +
 facet_grid(Year~.)
 ```
 
@@ -236,6 +318,9 @@ geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= pr
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+   labs(x = "Proportion of inhabitants with higher education per postal code",
+        y = "Proportion of new donors",
+        title = "Proportion of new donors and higher education per postal code") +
 facet_grid(Year~.)
 ```
 
@@ -246,6 +331,9 @@ geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= pr
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+     labs(x = "Proportion of inhabitants with higher education per postal code",
+        y = "Proportion of repeat donors",
+        title = "Proportion of repeat donors and higher education per postal code") +
 facet_grid(Year~.)
 ```
 
@@ -257,6 +345,9 @@ geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= pr
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+     labs(x = "Proportion of inhabitants with higher education per postal code",
+        y = "Proportion of repeat  donors",
+        title = "Proportion of repeat donors and higher education per postal code") +
 facet_grid(Year~.)
 ```
 

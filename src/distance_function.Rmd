@@ -121,7 +121,7 @@ units(final_data$averageincome) <- "Euro"
 mod_data <- final_data[!(final_data$zip %in% c("02150")), ]
 
 model_data <- mod_data  %>% 
-filter(nb_fixed_donors_per_zip > 99)
+filter(nb_fixed_donations_per_zip > 99)
 
 ```
 

@@ -71,7 +71,7 @@ units(model_data$averageincome) <- "Euro"
  table1(~prop_donors + eligible_population + nb_fixed_donors_per_zip + nb_fixed_donations_per_zip + nb_fixed_donors_per_zip + medianincome + averageincome + proportion_inhabitants_with_higher_education + proportion_inhabitants_with_higher_education + prop_repeat_donors + prop_new_donors + prop_donors + nb_fixed_donation_per_act_donor,data = model_data, overall = "Total", topclass="Rtable1-grid Rtable1-center")
 ```
 
-    ## [1] "<table class=\"Rtable1-grid Rtable1-center\">\n<thead>\n<tr>\n<th class='rowlabel firstrow lastrow'></th>\n<th class='firstrow lastrow'><span class='stratlabel'>Total<br><span class='stratn'>(n=194)</span></span></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Proportion of donors per postal code </span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.0331 (0.0103)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.0324 [0.0118, 0.0643]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Number of residents per zip who is suitable for donating blood</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>5920 (2860)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>5170 [1960, 15700]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Number of donors per zip</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>184 (87.0)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>155 [100, 552]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Proportion of donations per postal code</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>310 (143)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>267 [157, 929]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Median income of household per postal code<span class='varunits'> (Euro)</span></span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>23600 (3210)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>23400 [16400, 33100]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Average income of household per postal code<span class='varunits'> (Euro)</span></span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>27300 (6210)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>25500 [17900, 53700]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Proportion_inhabitants_with_higher_education</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.439 (0.157)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.439 [0.134, 0.770]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>prop_repeat_donors</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.0292 (0.00908)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.0283 [0.0109, 0.0546]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>prop_new_donors</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.00398 (0.00163)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.00378 [0.000895, 0.0107]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Number of donations divided by numbers of donor per zip</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>1.70 (0.130)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>1.69 [1.41, 2.29]</td>\n</tr>\n</tbody>\n</table>\n"
+    ## [1] "<table class=\"Rtable1-grid Rtable1-center\">\n<thead>\n<tr>\n<th class='rowlabel firstrow lastrow'></th>\n<th class='firstrow lastrow'><span class='stratlabel'>Total<br><span class='stratn'>(n=302)</span></span></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Proportion of donors per postal code </span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.0315 (0.0110)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.0308 [0.00846, 0.0647]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Number of residents per zip who is suitable for donating blood</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>4960 (2810)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>4440 [1110, 15700]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Number of donors per zip</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>145 (86.9)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>117 [53.0, 552]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Proportion of donations per postal code</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>248 (143)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>205 [100, 929]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Median income of household per postal code<span class='varunits'> (Euro)</span></span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>23700 (3320)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>23500 [16400, 33100]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Average income of household per postal code<span class='varunits'> (Euro)</span></span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>27200 (5770)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>25700 [17900, 53700]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Proportion_inhabitants_with_higher_education</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.417 (0.156)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.408 [0.132, 0.770]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>prop_repeat_donors</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.0279 (0.00977)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.0266 [0.00812, 0.0557]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>prop_new_donors</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>0.00363 (0.00173)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>0.00337 [0.000334, 0.0108]</td>\n</tr>\n<tr>\n<td class='rowlabel firstrow'><span class='varlabel'>Number of donations divided by numbers of donor per zip</span></td>\n<td class='firstrow'></td>\n</tr>\n<tr>\n<td class='rowlabel'>Mean (SD)</td>\n<td>1.73 (0.145)</td>\n</tr>\n<tr>\n<td class='rowlabel lastrow'>Median [Min, Max]</td>\n<td class='lastrow'>1.71 [1.41, 2.32]</td>\n</tr>\n</tbody>\n</table>\n"
 
 ``` r
 #kable(model_data)
@@ -121,6 +121,17 @@ geom_histogram()
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
 ![](visualising_model_data_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+Distiribution of proportion\_inhabitants\_with\_higher\_education
+variable
+
+``` r
+ggplot(data= model_data, mapping= aes(x=proportion_inhabitants_with_higher_education )) + 
+geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 \#Proportion of donors and median income
 
@@ -134,7 +145,7 @@ scale_x_log10() +
         title = "Proportion of donors per median income of postal codes")
 ```
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 #facet_grid(Year~.)
@@ -156,13 +167,13 @@ mapping = aes(label = name)) +
         title = "Proportion of donors per median income of postal codes")
 ```
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 #facet_grid(Year~.)
 #facet_grid(Year ~.)
 
-# This if helpful for seeing that high proportion of donors seems to be areas near the fixed sites, atleast in Ruskeasuo, Etelä-Haaga and Lahti Asemanseutu. In Espoo i find that 
+# This if helpful for seeing that high proportion of donors seems to be areas near the fixed sites, atleast in Ruskeasuo, Etelä-Haaga and Lahti Asemanseutu. 
 ```
 
 ## proportion of donors, median income and distance
@@ -185,7 +196,11 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+``` r
+# It seems that distance to donation site does not matter as much as i thought. This could be matter of minDIst scale which goes in this picture  from 400 meters to almost 3km. 
+```
 
 ### proportion of donors, median income and population
 
@@ -202,7 +217,7 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ``` r
 #facet_grid(Year~.)
@@ -226,6 +241,10 @@ facet_grid(Year~.)
     ##     vars: function
     ##     super:  <ggproto object: Class FacetGrid, Facet, gg>
 
+``` r
+# High number of  donors comes from smaller postal codes. 
+```
+
 \#proportion of new donors plus median income +
 distance
 
@@ -247,7 +266,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 Proportion of new donors, median income +
 population
 
@@ -265,7 +284,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 # proportion of repeat donors, median income + distance
 
@@ -287,7 +306,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ##### Proportion of repeat donors, median income, colored by eligible population
 
@@ -305,7 +324,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 # proportion of donors and average income, colored by eligible population
 
@@ -324,7 +343,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 \#\#average income and
 distance
@@ -347,7 +366,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 \#Proportion of new donors and average income
 (distance)
 
@@ -369,7 +388,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 #### proportion of new donors and average income + population
 
@@ -387,7 +406,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 ##### proportion of repeat donors, average income and (population)
 
@@ -409,7 +428,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 \#Higher education and prop
 donor
@@ -428,7 +447,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 ## Proportion of donors, higher education and distance
 
@@ -450,7 +469,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ### Propportion of donors, higher education and population
 
@@ -468,7 +487,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 ##### proportion of new donors, higher education and eligible population
 
@@ -486,7 +505,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 #### proportion of repeat donors, higher education and distance
 
@@ -508,7 +527,7 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 ##### proportion of repeat donors, higher education and eligible population
 
@@ -526,4 +545,4 @@ facet_grid(Year~.)
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](visualising_model_data_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
