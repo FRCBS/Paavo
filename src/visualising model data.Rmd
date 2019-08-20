@@ -43,7 +43,9 @@ units(model_data$averageincome) <- "Euro"
 #kable(model_data)
 ```
 
-# Distribution of eligible population variable
+# Distributions of variables 
+
+##Distribution of eligible population variable
 ```{r}
 ggplot(data=model_data, mapping = aes(x= eligible_population))+
 geom_histogram (binwidth= 1000)
@@ -73,7 +75,8 @@ geom_histogram()
 ```
 
 
-  #Proportion of donors and median income
+# Median income
+##Median income and proportion of donors
 ```{r}
 ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors))+
 geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
@@ -84,7 +87,7 @@ scale_x_log10() +
         title = "Proportion of donors per median income of postal codes")
 #facet_grid(Year~.)
 
-#There seems to be quite a number of areas with high proportion of donors and lower than 20k median income. After checking this, it seems that areas are all from Lahti. Also need to pay attention that im not visualising the years separately, so  there are same data points with different year. it seems that there could be  (mild)  positive correlation between median income and proportion of donors, but only to some degree so that richest ares do not have highest prop donors and there are areas with high prop of donors and less than 20k median income, so there might be even negative linear correlation.  I would guess that Helsinki would fit to linear model better, than the whole dataset.
+#There seems to be quite a number of areas with high proportion of donors and lower than 20k median income. After checking this, it seems that areas are all from Lahti. Also need to pay attention that im not visualising the years separately, so  there are same data points with different year. it seems that there could be  (mild)  positive correlation between median income and proportion of donors, but only to some degree so that richest ares do not have highest prop donors and there are areas with high prop of donors and less than 20k median income, so there might be even negative correlation.  I would guess that Helsinki would fit to linear model better, than the whole dataset.
 ```
 
 
@@ -109,7 +112,7 @@ mapping = aes(label = name)) +
 
 
 
-## proportion of donors, median income and distance
+## Median income,  distance with proportion of donors
 ```{r}
 ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors, color= minDist))+
 geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
@@ -126,7 +129,7 @@ facet_grid(Year~.)
 
 ```
 
-###  proportion of donors, median income and population
+### Median income and population with  proportion of donors
 ```{r}
 ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors, color= eligible_population))+
 geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
@@ -204,7 +207,8 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
 facet_grid(Year~.)
 ```
 
-# proportion of donors and average income, colored by eligible population
+# Average income 
+##proportion of donors and average income, colored by eligible population
 ```{r}
 ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_donors, color= eligible_population))+
 geom_point(mapping = aes(x= averageincome, y= prop_donors)) +
@@ -275,7 +279,9 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
 facet_grid(Year~.)
 ```
 
-#Higher education and proportion of  donors
+#Higher education 
+
+# Higher education and proportion of  donors
 ```{r}
 ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors))+
 geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_donors)) +
@@ -287,10 +293,10 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
         title = "Proportion of donors and higher education per postal code") +
 facet_grid(Year~.)
 
-#  Median income and tertiary education plots seems to be pretty similar. Postal codes from Lahti doesn't really fit into linear trend. Although smoothing curve tend to have a little bit more linearity curve before it drops down.  There might be some stronger correlation than with proportion of donors and median income.  
+#  Median income and tertiary education plots seems to be pretty similar. Postal codes from Lahti doesn't really fit into linear trend. Although smoothing curve tend to have a little bit more linearity curve before it drops down.  I would presume that there is  stronger correlation than with proportion of donors and median income.  
 ```
 
-## Proportion of donors, higher education and distance
+##  Higher education and distance and proportion of donors
 ```{r}
 ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors, color= minDist))+
 geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_donors)) +
@@ -306,7 +312,7 @@ facet_grid(Year~.)
 ```
 
 
-### Propportion of donors, higher education and population
+### Higher education and population and  proportion of donors
 ```{r}
 ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors, color= eligible_population)) +
 geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_donors))  +
@@ -364,7 +370,9 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
 facet_grid(Year~.)
 ```
  
-                              # Distance and proportion of donors 
+# Distance 
+
+#Distance and proportion of donors 
 
 ```{r}
 
@@ -379,7 +387,7 @@ labs(x = "Distance to closest donation site",
 facet_grid(Year~.)
 
 
-# So i could not see it from the pictures where distance was only coloring feature, but plotting distance versus proportion of donors shows pretty agressive negatively linear trend.  Ith shows that when distance increases the proportion of donors decreases. 
+# So i could not see it from the pictures where distance was only coloring feature, but plotting distance versus proportion of donors shows negatively linear trend.  Ith shows that when the distance goes to 5-6 km the donations start to drop pretty heavily. 
 ```
 
 ## Distance and proportion of repeated donors
@@ -403,7 +411,7 @@ facet_grid(Year~.)
 ```{r}
 
 ggplot(data=model_data, mapping = aes(x= minDist, y= prop_new_donors))+
-geom_point(mapping = aes(x= minDist, y= prop_repeat_donors)) +
+geom_point(mapping = aes(x= minDist, y= prop_new_donors)) +
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
@@ -412,7 +420,7 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
         title = "Proportion of  new donors and distance to closest donation site") +
 facet_grid(Year~.)
 
-# New donors do not fit into the same negative trend than all the donors and repeated donors and this plot looks pretty wierd because of that. 
+
 ```
 
 
