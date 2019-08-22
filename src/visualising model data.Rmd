@@ -11,15 +11,33 @@ library(lubridate)
 library(knitr)
 library(viridis)
 library(table1)
+library(GGally)
+library(psycho)
 ```
+
 
 ```{r}
 load("/home/ilpo/Paavo/data/model_data.RData")
 ```
 
-# Table one from model data
+#Tranforming variables and filtering the data
 
 ```{r}
+model_data$minDistF<- cut(model_data$minDist,breaks = c(-1,1000, 5000,10000,20000,max(model_data$minDist))+1,include.lowest =TRUE,right = FALSE) #minDist looks weird in plots, so it needed to factorised. 
+
+# new dataframe filtered for regression
+modified_data <- model_data %>% 
+filter(medianincome < 30000) %>%  # filtering few outliers away
+mutate(minDistkm= minDist /  1000) %>% # meters to kilometers
+filter(minDistkm > 0.5)        # filtering distances less than 500m 
+
+
+```
+
+
+#Table one from model data
+
+```{r,results='asis'}
 
 label(model_data$medianincome)  <- "Median income of household per postal code"
 label(model_data$averageincome) <- "Average income of household per postal code"
@@ -39,43 +57,56 @@ units(model_data$averageincome) <- "Euro"
 
 
 ```
-```{r}
-#kable(model_data)
-```
 
-# Distributions of variables 
+#Distributions of variables 
 
-##Distribution of eligible population variable
+ ##Distribution of eligible population variable
 ```{r}
 ggplot(data=model_data, mapping = aes(x= eligible_population))+
-geom_histogram (binwidth= 1000)
+geom_histogram (binwidth= 500)
+
+# Just to keep in mind that most of postal codes have around 2-5 thousand habitants. 
 ```
 ### Distribution of proportion of donors variable
 ```{r}
 ggplot(data=model_data, mapping = aes(x= prop_donors))+
 geom_histogram ()  
-#scale_x_log10()
-```
-##  Distribution of proportion of donors variable on logarithmic scale
 
-```{r}
-ggplot(data=model_data, mapping = aes(x= prop_donors))+
-geom_histogram ()  +
-scale_x_log10()
 ```
-### Distribution of minimum distance variable
+## Proportion of repeat donors 
+```{r}
+ggplot(data=model_data, mapping = aes(x= prop_new_donors))+
+geom_histogram ()  
+
+```
+
+### Proportion of new donors 
+```{r}
+ggplot(data=model_data, mapping = aes(x= prop_repeat_donors))+
+geom_histogram ()  
+
+```
+
+
+###Distribution of minimum distance variable
 ```{r}
 ggplot(data= model_data, mapping= aes(x=minDist)) + 
 geom_histogram()
+
+# Most of postal codes in this data are around 10km distance to donation sites 
 ```
 Distiribution of proportion_inhabitants_with_higher_education variable
 ```{r}
 ggplot(data= model_data, mapping= aes(x=proportion_inhabitants_with_higher_education )) + 
 geom_histogram()
+
+# Proportion of higher 
 ```
 
 
-# Median income
+#Median income
+
+
 ##Median income and proportion of donors
 ```{r}
 ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors))+
@@ -87,7 +118,7 @@ scale_x_log10() +
         title = "Proportion of donors per median income of postal codes")
 #facet_grid(Year~.)
 
-#There seems to be quite a number of areas with high proportion of donors and lower than 20k median income. After checking this, it seems that areas are all from Lahti. Also need to pay attention that im not visualising the years separately, so  there are same data points with different year. it seems that there could be  (mild)  positive correlation between median income and proportion of donors, but only to some degree so that richest ares do not have highest prop donors and there are areas with high prop of donors and less than 20k median income, so there might be even negative correlation.  I would guess that Helsinki would fit to linear model better, than the whole dataset.
+#There seems to be quite a number of areas with high proportion of donors and lower than 20k median income. After checking this, it seems that areas are all from Lahti. Also need to pay attention that im not visualising the years separately, so  there are same data points with different year. it seems that there could be  (mild)  positive correlation between median income and proportion of donors, but only to some degree so that richest ares do not have highest prop donors and there are areas with high prop of donors and less than 20k median income, so there might be even negative correlation.  I would guess that Helsinki would fit to linear model better, than the whole dataset. 
 ```
 
 
@@ -107,67 +138,70 @@ mapping = aes(label = name)) +
         title = "Proportion of donors per median income of postal codes")
 #facet_grid(Year ~.)
 
-# This if helpful for seeing that high proportion of donors seems to be areas near the fixed sites, atleast in Ruskeasuo, Etelä-Haaga and Lahti Asemanseutu. 
+# This if helpful for seeing that high proportion of donors seems to be areas near the fixed sites, atleast in Ruskeasuo, Etelä-Haaga and Lahti Asemanseutu and that Lahti has lot of areas where median income is low, but there are high proportion of donors.
 ```
 
 
 
 ## Median income,  distance with proportion of donors
 ```{r}
-ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors, color= minDist))+
-geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
+ggplot(data=model_data)+
+geom_point(mapping = aes(x= medianincome, y= prop_donors,color= minDistF)) +
+geom_smooth ( mapping = aes(x= medianincome, y= prop_donors)) + 
+scale_color_viridis(discrete=TRUE,direction = -1) +
    labs(x = "Median income",
         y = "Proportion of donors",
         title = "Proportion of donors per median income and distance to donation site per postal code") +
 facet_grid(Year~.)
 
-# It seems that distance to donation site does not matter as much as i thought. This could be matter of minDIst categories that hides the trend. I should maybe change the colors so i coulld see the differences easier. 
-
+# Distance does matter a lot as high proportion of donors comes from nearby fixed sites. 
 
 ```
+##prop donors, median income and distance (km)
+```{r}
+ggplot(data=modified_data)+
+geom_point(mapping = aes(x= medianincome, y= prop_donors,color= minDistkm)) +
+geom_smooth ( mapping = aes(x= medianincome, y= prop_donors)) + 
+scale_color_viridis(direction = -1) +
+   labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income and distance to donation site per postal code") +
+facet_grid(Year~.)
+
+# In this picture its pretty easy to see, that high proportion of donors comes from distances around 10 km
+```
+
 
 ### Median income and population with  proportion of donors
 ```{r}
 ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors, color= eligible_population))+
 geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
-geom_smooth () + 
-scale_x_log10() +
+geom_smooth (mapping = aes(x= medianincome, y= prop_donors)) + 
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
  labs(x = "Median income",
         y = "Proportion of donors",
-        title = "Proportion of donors per median income and eligible population of postal codes")
-#facet_grid(Year~.)
+        title = "Proportion of donors per median income and eligible population of postal codes")+ 
 facet_grid(Year~.)
-
 
 # Highest proportion of donors tend to come from smaller postal codes which sounds pretty reasonable, since there need to be smaller amount of donors per population. 
 ```
+
 #proportion of new donors plus median income + distance
 
 ```{r}
-ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_new_donors, color= minDist))+
-geom_point(mapping = aes(x= medianincome, y= prop_new_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
-   labs(x = "Median income",
-        y = "Proportion of new donors",
-        title = "Proportion of new donors per median income and distance to donation sites of postal codes")+
-facet_grid(Year~.)
+ggplot(data=model_data)+
+geom_point(mapping = aes(x= medianincome, y= prop_new_donors,color= minDistF)) +
+geom_smooth(mapping = aes(x= medianincome, y= prop_new_donors))
 
-# So this looks new donors and distance per median income. It seems that new donors do not live nearby of donation sites, so it looks pretty similar to all donors plot.  Trend might be sligtly negative.
+# So this looks new donors and distance per median income. It seems that new donors do not live nearby of donation sites, so it looks pretty similar to all donors plot.  Distance tends to explain a lot more than median income, which seems to have negative trend. 
 
 ```
 Proportion of  new donors, median income + population
 
 ```{r}
-ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_new_donors, color= eligible_population))+
-geom_point(mapping = aes(x= medianincome, y= prop_new_donors)) +
-geom_smooth () + 
-scale_x_log10() +
+ggplot(data=model_data) +
+geom_point(mapping = aes(x= medianincome, y= prop_new_donors,, color= eligible_population)) +
+geom_smooth (aes(x= medianincome, y= prop_new_donors)) + 
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
  labs(x = "Median income",
         y = "Proportion of new donors",
@@ -180,17 +214,16 @@ facet_grid(Year~.)
 
 # proportion of  repeat donors, median income + distance
 ```{r}
-ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_repeat_donors, color= minDist))+
-geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+ggplot(data=model_data) +
+geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors, color=minDistF)) +
+geom_smooth (mapping = aes(x= medianincome, y= prop_repeat_donors)) + 
+#scale_color_viridis(discrete=FALSE,direction = -1) + 
    labs(x = "Median income",
         y = "Proportion of repeat donors",
         title = "Proportion of repeat donors per median income and distance to donation site per postal code") + 
 facet_grid(Year~.)
 
-
+#same trend is visible on repeat donors also. 
 ```
 
 
@@ -199,7 +232,7 @@ facet_grid(Year~.)
 ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_repeat_donors, color= eligible_population))+
 geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors)) +
 geom_smooth () + 
-scale_x_log10() +
+#scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
    labs(x = "Median income",
         y = "Proportion of  repeat donors",
@@ -218,32 +251,32 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
    labs(x = "Average income",
         y = "Proportion of donors",
         title = "Proportion of donors per average income and eligible population per postal code") +
-#facet_grid(Year~.)
 facet_grid(Year~.)
+
+# Averaga income and proportion of donors shows lack of donations from richest areas. Its reasonable that donations tend to come from areas where most of postal code tend to be. 
 ```
 
 ##average income and distance 
 ```{r}
-ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_donors, color= minDist))+
-geom_point(mapping = aes(x= averageincome, y= prop_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+ggplot(data=model_data)+
+geom_point(mapping = aes(x= averageincome, y= prop_donors,color= minDistF)) +
+geom_smooth (mapping = aes(x= averageincome, y= prop_donors)) + 
+#scale_color_viridis() + 
    labs(x = "Average income",
         y = "Proportion of donors",
-        title = "Proportion of donors per average income of postal codes")+
+        title = "Proportion of donors per average income of postal codes") +
 facet_grid(Year~.)
+
+# Average income seems to have negative correlation with prop donors.  All the observations are scattered pretty randomly  into 20-30k area. 
 ```
 #Proportion of new donors  and average income (distance)
 ```{r}
-ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_new_donors, color= minDist))+
-geom_point(mapping = aes(x= averageincome, y= prop_new_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
- labs(x = "Median income",
+ggplot(data=model_data)+
+geom_point(mapping = aes(x= averageincome, y= prop_new_donors,color= minDistF)) +
+geom_smooth (mapping = aes(x= averageincome, y= prop_new_donors)) + 
+ labs(x = "average income",
         y = "Proportion of donors",
-        title = "Proportion of donors per median income and distance to donation site  per postal code") +
+        title = "Proportion of donors per average income and distance to donation site  per postal code") +
 facet_grid(Year~.)
 ```
 
@@ -254,7 +287,7 @@ facet_grid(Year~.)
 ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_new_donors, color= eligible_population))+
 geom_point(mapping = aes(x= averageincome, y= prop_new_donors)) +
 geom_smooth () + 
-scale_x_log10() +
+#scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
  labs(x = "Median income",
         y = "Proportion of  new donors",
@@ -266,18 +299,31 @@ facet_grid(Year~.)
 
 
 
-#####  proportion of repeat donors, average income and (population)
+#####  Proportion of repeat donors, average income and distance
 ```{r}
-ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_repeat_donors, color= minDist))+
+ggplot(data=model_data)+
+geom_point(mapping = aes(x= averageincome, y= prop_repeat_donors,color= minDistF)) +
+geom_smooth (mapping = aes(x= averageincome, y= prop_repeat_donors)) + 
+#scale_x_log10() +
+#scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+   labs(x = "Average income",
+        y = "Proportion of repeat donors",
+        title = "Proportion of repeat donors per average income and distance to donation site  of postal codes")+
+facet_grid(Year~.)
+```
+##### Proportion of repeat donors, average income and population
+```{r}
+ggplot(data=model_data, mapping = aes(x= averageincome, y= prop_repeat_donors, color= eligible_population))+
 geom_point(mapping = aes(x= averageincome, y= prop_repeat_donors)) +
 geom_smooth () + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
    labs(x = "Average income",
         y = "Proportion of repeat donors",
-        title = "Proportion of repeat donors per average income and distance to donation site  of postal codes")+
+        title = "Proportion of repeat donors per average income and eligible population of postal codes")+
 facet_grid(Year~.)
 ```
+
 
 #Higher education 
 
@@ -285,7 +331,7 @@ facet_grid(Year~.)
 ```{r}
 ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors))+
 geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_donors)) +
-geom_smooth () + 
+geom_smooth (method="loess") + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
      labs(x = "Proportion of inhabitants with higher education per postal code",
@@ -293,22 +339,21 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
         title = "Proportion of donors and higher education per postal code") +
 facet_grid(Year~.)
 
-#  Median income and tertiary education plots seems to be pretty similar. Postal codes from Lahti doesn't really fit into linear trend. Although smoothing curve tend to have a little bit more linearity curve before it drops down.  I would presume that there is  stronger correlation than with proportion of donors and median income.  
+#  Median income and tertiary education plots seems to be scattered pretty similar and I would presume that if there is any correlation, it is weak linear one.  
 ```
 
 ##  Higher education and distance and proportion of donors
 ```{r}
-ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors, color= minDist))+
-geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+ggplot(data=model_data) +
+geom_point( mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors, color= minDistF)) +
+geom_smooth ( mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors)) + 
+#scale_x_log10() +
+#scale_color_viridis(direction = -1) + 
    labs(x = "Proportion of inhabitants with higher education per postal code",
         y = "Proportion of donors",
         title = "Proportion of donors, higher education and distance to donation site per postal code") +  
 facet_grid(Year~.)
-
-# Distance doesn't seems to have a lot of effect  on this plot. There are some data points from close distances, but there isn't really any kind of trend that favors close distance donations. 
+#  Coloring the distance shows that donations do not favor educated areas, but areas with close distance to donation site. 
 ```
 
 
@@ -324,7 +369,7 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
         title = "Proportion of donors, higher education and eligible population  per postal code") +
 facet_grid(Year~.)
 
-# Population size of postal code tends to favor high number of donors in smaller places. This is in line with common sense since donations are measured by dividing the population size with number of donors.  Highest number of tertiary educated inhabitants behave similar to those highest number of median income areas, where there are quite a downfall in donation trend. 
+# Population size of postal code tends to favor high number of donors in smaller places. This is in line with common sense since donations are measured by dividing the population size with number of donors.  Highest number of tertiary educated inhabitants behave similar to those highest number of median income areas, where there are quite a downfall in donation trend. Im not sure that the downfall is as drastic as it is with median income. 
 ```
 
 
@@ -340,22 +385,22 @@ scale_color_viridis(discrete = FALSE,direction = -1,trans="log") +
         title = "Proportion of new donors and higher education per postal code") +
 facet_grid(Year~.)
 
-
+# Eligible population shows that lot of high proportion of donor areas come from smaller postal codes even with new donors.  
 ```
 
 ####  proportion of repeat donors, higher education and distance 
 ```{r}
-ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_repeat_donors, color=minDist))+
-geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_repeat_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+ggplot(data=model_data) +
+geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_repeat_donors, color=minDistF)) +
+geom_smooth (mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_repeat_donors)) + 
      labs(x = "Proportion of inhabitants with higher education per postal code",
         y = "Proportion of repeat donors",
         title = "Proportion of repeat donors and higher education per postal code") +
 facet_grid(Year~.)
-```
 
+# repeated donors shows the sane tremd than other plots with education. High proportion of donors come from close postal codes to fixed site. 
+```
+# 
 
 #####  proportion of repeat donors, higher education and eligible population
 ```{r}
@@ -376,25 +421,42 @@ facet_grid(Year~.)
 
 ```{r}
 
-ggplot(data=model_data, mapping = aes(x= minDist, y= prop_donors))+
-geom_point(mapping = aes(x= minDist, y= prop_donors)) +
-geom_smooth () + 
-scale_x_log10() +
-scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+ggplot(data=model_data)+
+geom_point(mapping = aes(x= minDistF, y= prop_donors)) +
+geom_smooth (mapping = aes(x= minDistF, y= prop_donors)) + 
+#scale_x_log10() +
+#scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
 labs(x = "Distance to closest donation site",
         y = "Proportion of donors",
         title = "Proportion of  donors and distance to closest donation site") +
 facet_grid(Year~.)
 
 
-# So i could not see it from the pictures where distance was only coloring feature, but plotting distance versus proportion of donors shows negatively linear trend.  Ith shows that when the distance goes to 5-6 km the donations start to drop pretty heavily. 
+# 
 ```
+```{r}
+ggplot(data=model_data)+ # dataset where distance is kilometers and less than 500m distances are filtered out. 
+geom_point(mapping = aes(x= minDist ,y= prop_donors)) +
+geom_smooth (mapping = aes(x= minDist, y= prop_donors)) + 
+scale_x_log10() +
+#scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+labs(x = "Distance to closest donation site",
+        y = "Proportion of donors",
+        title = "Proportion of  donors and distance to closest donation site") +
+facet_grid(Year~.)
+
+# Distance seems to have moderate negative correlation with proportion of donors. 
+```
+
+
+
+
 
 ## Distance and proportion of repeated donors
 ```{r}
-ggplot(data=model_data, mapping = aes(x= minDist, y= prop_repeat_donors))+
+ggplot(data=model_data)+
 geom_point(mapping = aes(x= minDist, y= prop_repeat_donors)) +
-geom_smooth () + 
+geom_smooth ( mapping = aes(x= minDist, y= prop_repeat_donors)) + 
 scale_x_log10() +
 scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
   labs(x = "Distance to closest donation site",
@@ -420,20 +482,71 @@ scale_color_viridis(discrete=FALSE,direction = -1,trans="log") +
         title = "Proportion of  new donors and distance to closest donation site") +
 facet_grid(Year~.)
 
+# New donors looks exactly the same as as other plots with proportion of donors and distance. 
+```
+# Median income and higher education
+
+```{r}
+ggplot(data=model_data)+
+geom_point(mapping =aes( x= medianincome, y= proportion_inhabitants_with_higher_education)) +
+geom_smooth ( mapping = aes(x= medianincome, y= proportion_inhabitants_with_higher_education, method= "loess"))
+
+#Median income and higher education tends to correlate with strongly. 
+```
+
+# Distance in kilometers with filtered data
+```{r}
+ggplot(data=modified_data)+ # dataset where distance is kilometers and less than 500m distances are filtered out. 
+geom_point(mapping = aes(x= minDistkm, y= prop_donors)) +  # meters turned into kilometers. 
+geom_smooth (mapping = aes(x= minDistkm, y= prop_donors)) + 
+#scale_x_log10() +
+#scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+labs(x = "Distance to closest donation site",
+        y = "Proportion of donors",
+        title = "Proportion of  donors and distance to closest donation site") +
+facet_grid(Year~.)
+
+# Distance seems to have moderate negative correlation with proportion of donors. 
+```
+```{r}
+ggplot(data=modified_data)+ # dataset where distance is kilometers and less than 500m distances are filtered out. 
+geom_point(mapping = aes(x= minDistkm, y= prop_repeat_donors)) +  # meters turned into kilometers. 
+geom_smooth (mapping = aes(x= minDistkm, y= prop_repeat_donors)) + 
+scale_x_log10() +
+#scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+labs(x = "Distance to closest donation site",
+        y = "Proportion of donors",
+        title = "Proportion of  donors and distance to closest donation site") +
+facet_grid(Year~.)
 
 ```
 
 
+#Correlation matrix and plot
+```{r}
+cordata <- model_data %>% # Making a new dataframe so i dont count correlation to all variables. 
+dplyr::select(prop_donors,prop_new_donors,prop_repeat_donors, medianincome, averageincome,minDist,proportion_inhabitants_with_higher_education, eligible_population) #selecting wanted variables
+
+
+cor <- psycho::correlation(cordata) # R doesn't recognize this particular correlation function without package name first 
+plot(cor)#visualise the correlation matrix 
+#print(cor)
+
+```
+
+
+```{r,results='asis'}
+summary(cor) # prints correlation matrix 
+# Have to check the multicollinearity later as higher education and median income have high correlation (0.77). 
+write_csv(summary(cor), "myformattedcortable.csv")
+```
 
 
 
-
-
-
-
-
-
-
+```{r}
+save(modified_data, #saving the filtered data for regression
+file = paste0("name.",Sys.Date(),".RData"))
+```
 
 
 

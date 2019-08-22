@@ -123,8 +123,7 @@ by = c("zip", "Year")) %>%
 
 
 fix_preprocessed$nb_fixed_first_time_donors[is.na(fix_preprocessed$nb_fixed_first_time_donors)] <- 0
-fix_preprocessed$nb_fixed_repeat_don
-ors[is.na(fix_preprocessed$nb_fixed_repeat_donors)] <- 0   # Deleting missing values
+fix_preprocessed$nb_fixed_repeat_donors[is.na(fix_preprocessed$nb_fixed_repeat_donors)] <- 0   # Deleting missing values
 ```
 
 
