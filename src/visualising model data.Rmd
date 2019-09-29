@@ -12,6 +12,7 @@ library(knitr)
 library(viridis)
 library(table1)
 library(GGally)
+library(corrplot)
 library(psycho)
 ```
 
@@ -351,7 +352,7 @@ geom_smooth ( mapping = aes(x= proportion_inhabitants_with_higher_education, y= 
 #scale_color_viridis(direction = -1) + 
    labs(x = "Proportion of inhabitants with higher education per postal code",
         y = "Proportion of donors",
-        title = "Proportion of donors, higher education and distance to donation site per postal code") +  
+        title = "Proportion of donors, higher education and distance  per postal code") +  
 facet_grid(Year~.)
 #  Coloring the distance shows that donations do not favor educated areas, but areas with close distance to donation site. 
 ```
@@ -530,14 +531,28 @@ dplyr::select(prop_donors,prop_new_donors,prop_repeat_donors, medianincome, aver
 
 cor <- psycho::correlation(cordata) # R doesn't recognize this particular correlation function without package name first 
 plot(cor)#visualise the correlation matrix 
-#print(cor)
+```
+
+
+
+```{r,message=FALSE}
+myvars <- modified_data %>% 
+select(prop_donors, medianincome,proportion_inhabitants_with_higher_education, minDistkm, eligible_population,prop_new_donors,prop_repeat_donors)
+
+
+ggpairs(myvars)
+
+svg("myvars.svg",height=8,width=8)
+ggpairs(myvars) 
+dev.off()
 
 ```
 
 
-```{r,results='asis'}
-summary(cor) # prints correlation matrix 
-# Have to check the multicollinearity later as higher education and median income have high correlation (0.77). 
+
+
+```{r}
+summary(cor)
 write_csv(summary(cor), "myformattedcortable.csv")
 ```
 
