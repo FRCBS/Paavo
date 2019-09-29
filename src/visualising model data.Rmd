@@ -422,7 +422,7 @@ facet_grid(Year~.)
 
 ```{r}
 
-ggplot(data=model_data)+
+ggplot(data=modified_data)+
 geom_point(mapping = aes(x= minDistF, y= prop_donors)) +
 geom_smooth (mapping = aes(x= minDistF, y= prop_donors)) + 
 #scale_x_log10() +
@@ -555,6 +555,110 @@ dev.off()
 summary(cor)
 write_csv(summary(cor), "myformattedcortable.csv")
 ```
+
+
+# modify the plots for presentation 
+
+
+```{r}
+ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors))+
+geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
+geom_smooth (method = "loess") + 
+scale_x_log10() +
+  theme_bw() +
+  labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income of postal codes")
+```
+
+```{r}
+
+ ggplot(data = model_data,
+            mapping = aes(x = medianincome, y = prop_donors))+
+geom_point(alpha= 0.25) +
+scale_x_log10() + 
+  geom_text(data = model_data ,check_overlap = TRUE, na.rm= TRUE, size=3,
+mapping = aes(label = name)) +
+ labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income of postal codes")+
+  theme_bw()
+#facet_grid(Year ~.)
+```
+```{r}
+ggplot(data=modified_data)+
+geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors,color= minDistF)) +
+geom_smooth ( mapping = aes(x= medianincome, y= prop_donors)) + 
+scale_color_viridis(discrete=TRUE,direction = -1) +
+   labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income and distance to donation site per postal code") +
+  theme_bw()+
+facet_grid(Year~.)
+```
+
+```{r}
+ggplot(data=modified_data)+
+geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors,color= minDistF)) +
+geom_smooth ( mapping = aes(x= medianincome, y= prop_repeat_donors)) + 
+scale_color_viridis(discrete=TRUE,direction = -1) +
+   labs(x = "Median income",
+        y = "Proportion of repeat donors",
+        title = "Proportion of repeat donors per median income and distance to donation site per postal code") +
+  theme_bw()+
+facet_grid(Year~.)
+```
+
+```{r}
+ggplot(data=modified_data)+
+geom_point(mapping = aes(x= medianincome, y= prop_new_donors,color= minDistF)) +
+geom_smooth ( mapping = aes(x= medianincome, y= prop_new_donors)) + 
+scale_color_viridis(discrete=TRUE,direction = -1) +
+   labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income and distance to donation site per postal code") +
+  theme_bw()+
+facet_grid(Year~.)
+```
+
+```{r}
+ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors))+
+geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_donors)) +
+geom_smooth (method="loess") + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+     labs(x = "Proportion of inhabitants with higher education per postal code",
+        y = "Proportion of donors",
+        title = "Proportion of donors and higher education per postal code") +
+facet_grid(Year~.)+
+theme_bw()
+```
+
+
+```{r}
+ggplot(data=modified_data)+ # dataset where distance is kilometers and less than 500m distances are filtered out. 
+geom_point(mapping = aes(x= minDistkm ,y= prop_donors)) +
+geom_smooth (mapping = aes(x= minDistkm, y= prop_donors)) + 
+scale_x_log10() +
+#scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+labs(x = "Distance to closest donation site (kilometers)",
+        y = "Proportion of donors",
+        title = "Proportion of  donors and distance to closest donation site") +
+#facet_grid(Year~.)  +
+theme_bw()
+
+```
+```{r}
+ggplot(data=modified_data)+
+geom_point(mapping = aes(x=medianincome, y= proportion_inhabitants_with_higher_education))+
+geom_smooth(mapping = aes(x=medianincome, y= proportion_inhabitants_with_higher_education))+
+labs(x= "median income", 
+    y= "Proportion inhabitants with higher education", 
+    title= "Higher education and median income") + 
+theme_bw()
+```
+
+
 
 
 

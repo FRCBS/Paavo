@@ -1130,7 +1130,7 @@ facet_grid(Year~.)
 \#Distance and proportion of donors
 
 ``` r
-ggplot(data=model_data)+
+ggplot(data=modified_data)+
 geom_point(mapping = aes(x= minDistF, y= prop_donors)) +
 geom_smooth (mapping = aes(x= minDistF, y= prop_donors)) + 
 #scale_x_log10() +
@@ -1302,10 +1302,6 @@ plot(cor)#visualise the correlation matrix
 ![](visualising_model_data_files/figure-gfm/unnamed-chunk-39-1.png)<!-- -->
 
 ``` r
-#print(cor)
-```
-
-``` r
 myvars <- modified_data %>% 
 select(prop_donors, medianincome,proportion_inhabitants_with_higher_education, minDistkm, eligible_population,prop_new_donors,prop_repeat_donors)
 
@@ -1325,53 +1321,186 @@ dev.off()
     ##   2
 
 ``` r
-summary(cor) # prints correlation matrix 
+summary(cor)
 ```
 
-``` 
-                                         prop_donors prop_new_donors
-```
-
-prop\_donors  
-prop\_new\_donors 0.76\*\*\*  
-prop\_repeat\_donors 0.99\*\*\* 0.68*** medianincome -0.24* -0.14
-averageincome -0.19 -0.03 minDist -0.52**\* -0.55***
-proportion\_inhabitants\_with\_higher\_education 0.02 0.15
-eligible\_population -0.43*** -0.26\*\* prop\_repeat\_donors
-prop\_donors  
-prop\_new\_donors  
-prop\_repeat\_donors  
-medianincome -0.25\*\* averageincome -0.2 minDist -0.48***
-proportion\_inhabitants\_with\_higher\_education 0 eligible\_population
--0.44*** medianincome averageincome prop\_donors  
-prop\_new\_donors  
-prop\_repeat\_donors  
-medianincome  
-averageincome 0.89\*\*\*  
-minDist -0.1 -0.24\* proportion\_inhabitants\_with\_higher\_education
-0.77\*\*\* 0.78*** eligible\_population -0.1 -0.08 minDist
-prop\_donors  
-prop\_new\_donors  
-prop\_repeat\_donors  
-medianincome  
-averageincome  
-minDist  
-proportion\_inhabitants\_with\_higher\_education -0.5***
-eligible\_population 0.14
-proportion\_inhabitants\_with\_higher\_education prop\_donors  
-prop\_new\_donors  
-prop\_repeat\_donors  
-medianincome  
-averageincome  
-minDist  
-proportion\_inhabitants\_with\_higher\_education  
-eligible\_population
--0.04
+    ##                                              prop_donors prop_new_donors
+    ## prop_donors                                                             
+    ## prop_new_donors                                  0.76***                
+    ## prop_repeat_donors                               0.99***         0.68***
+    ## medianincome                                     -0.24*           -0.14 
+    ## averageincome                                     -0.19           -0.03 
+    ## minDist                                         -0.52***        -0.55***
+    ## proportion_inhabitants_with_higher_education       0.02            0.15 
+    ## eligible_population                             -0.43***        -0.26** 
+    ##                                              prop_repeat_donors
+    ## prop_donors                                                    
+    ## prop_new_donors                                                
+    ## prop_repeat_donors                                             
+    ## medianincome                                           -0.25** 
+    ## averageincome                                             -0.2 
+    ## minDist                                                -0.48***
+    ## proportion_inhabitants_with_higher_education                 0 
+    ## eligible_population                                    -0.44***
+    ##                                              medianincome averageincome
+    ## prop_donors                                                            
+    ## prop_new_donors                                                        
+    ## prop_repeat_donors                                                     
+    ## medianincome                                                           
+    ## averageincome                                     0.89***              
+    ## minDist                                             -0.1        -0.24* 
+    ## proportion_inhabitants_with_higher_education      0.77***       0.78***
+    ## eligible_population                                 -0.1         -0.08 
+    ##                                              minDist
+    ## prop_donors                                         
+    ## prop_new_donors                                     
+    ## prop_repeat_donors                                  
+    ## medianincome                                        
+    ## averageincome                                       
+    ## minDist                                             
+    ## proportion_inhabitants_with_higher_education -0.5***
+    ## eligible_population                            0.14 
+    ##                                              proportion_inhabitants_with_higher_education
+    ## prop_donors                                                                              
+    ## prop_new_donors                                                                          
+    ## prop_repeat_donors                                                                       
+    ## medianincome                                                                             
+    ## averageincome                                                                            
+    ## minDist                                                                                  
+    ## proportion_inhabitants_with_higher_education                                             
+    ## eligible_population                                                                -0.04
 
 ``` r
-# Have to check the multicollinearity later as higher education and median income have high correlation (0.77). 
 write_csv(summary(cor), "myformattedcortable.csv")
 ```
+
+# modify the plots for presentation
+
+``` r
+ggplot(data=model_data, mapping = aes(x= medianincome, y= prop_donors))+
+geom_point(mapping = aes(x= medianincome, y= prop_donors)) +
+geom_smooth (method = "loess") + 
+scale_x_log10() +
+  theme_bw() +
+  labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income of postal codes")
+```
+
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
+
+``` r
+ ggplot(data = model_data,
+            mapping = aes(x = medianincome, y = prop_donors))+
+geom_point(alpha= 0.25) +
+scale_x_log10() + 
+  geom_text(data = model_data ,check_overlap = TRUE, na.rm= TRUE, size=3,
+mapping = aes(label = name)) +
+ labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income of postal codes")+
+  theme_bw()
+```
+
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
+
+``` r
+#facet_grid(Year ~.)
+```
+
+``` r
+ggplot(data=modified_data)+
+geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors,color= minDistF)) +
+geom_smooth ( mapping = aes(x= medianincome, y= prop_donors)) + 
+scale_color_viridis(discrete=TRUE,direction = -1) +
+   labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income and distance to donation site per postal code") +
+  theme_bw()+
+facet_grid(Year~.)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->
+
+``` r
+ggplot(data=modified_data)+
+geom_point(mapping = aes(x= medianincome, y= prop_repeat_donors,color= minDistF)) +
+geom_smooth ( mapping = aes(x= medianincome, y= prop_repeat_donors)) + 
+scale_color_viridis(discrete=TRUE,direction = -1) +
+   labs(x = "Median income",
+        y = "Proportion of repeat donors",
+        title = "Proportion of repeat donors per median income and distance to donation site per postal code") +
+  theme_bw()+
+facet_grid(Year~.)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
+
+``` r
+ggplot(data=modified_data)+
+geom_point(mapping = aes(x= medianincome, y= prop_new_donors,color= minDistF)) +
+geom_smooth ( mapping = aes(x= medianincome, y= prop_new_donors)) + 
+scale_color_viridis(discrete=TRUE,direction = -1) +
+   labs(x = "Median income",
+        y = "Proportion of donors",
+        title = "Proportion of donors per median income and distance to donation site per postal code") +
+  theme_bw()+
+facet_grid(Year~.)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
+
+``` r
+ggplot(data=model_data, mapping = aes(x= proportion_inhabitants_with_higher_education, y= prop_donors))+
+geom_point(mapping = aes(x= proportion_inhabitants_with_higher_education,, y= prop_donors)) +
+geom_smooth (method="loess") + 
+scale_x_log10() +
+scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+     labs(x = "Proportion of inhabitants with higher education per postal code",
+        y = "Proportion of donors",
+        title = "Proportion of donors and higher education per postal code") +
+facet_grid(Year~.)+
+theme_bw()
+```
+
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
+
+``` r
+ggplot(data=modified_data)+ # dataset where distance is kilometers and less than 500m distances are filtered out. 
+geom_point(mapping = aes(x= minDistkm ,y= prop_donors)) +
+geom_smooth (mapping = aes(x= minDistkm, y= prop_donors)) + 
+scale_x_log10() +
+#scale_color_viridis(discrete=FALSE,direction = -1,trans="log") + 
+labs(x = "Distance to closest donation site (kilometers)",
+        y = "Proportion of donors",
+        title = "Proportion of  donors and distance to closest donation site") +
+#facet_grid(Year~.)  +
+theme_bw()
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+
+``` r
+ggplot(data=modified_data)+
+geom_point(mapping = aes(x=medianincome, y= proportion_inhabitants_with_higher_education))+
+geom_smooth(mapping = aes(x=medianincome, y= proportion_inhabitants_with_higher_education))+
+labs(x= "median income", 
+    y= "Proportion inhabitants with higher education", 
+    title= "Higher education and median income") + 
+theme_bw()
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+![](visualising_model_data_files/figure-gfm/unnamed-chunk-49-1.png)<!-- -->
 
 ``` r
 save(modified_data, #saving the filtered data for regression

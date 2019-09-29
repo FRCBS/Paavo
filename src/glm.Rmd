@@ -57,8 +57,8 @@ new_dn.poisson <- glm(prop_new_donors ~ medianincome + higher_education + eligib
 
 ```{r, warning=FALSE} 
 # Lets make binomial model for comparison 
-#repeat_dn.negabin <- MASS::glm.nb(prop_repea_tdonors ~ medianincome + higher_education + eligible_population + minDistkm, data=data)
-#new_dn.negabin<-MASS::glm.nb(prop_new_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=data)
+repeat_dn.negabin <- MASS::glm.nb(prop_repeat_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=data)
+new_dn.negabin<-MASS::glm.nb(prop_new_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=data)
 
 #quasipoisson
 repeat_dn.qpoisson <- glm(prop_repeat_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=data,family=quasipoisson)  
@@ -80,7 +80,7 @@ autoplot(repeat_dn.poisson,which = 1:6, ncol = 3, label.size = 3,shape = 1, alph
 
 #negative binomial
 ```{r}
-#autoplot(repeat_dn.negabin,which = 1:6, ncol = 3, label.size = 3,shape = 1, alpha = 0.7) 
+autoplot(repeat_dn.negabin,which = 1:6, ncol = 3, label.size = 3,shape = 1, alpha = 0.7) 
 
 ```
 
@@ -96,7 +96,7 @@ plot(repeat_dn.poisson, which = 3)
 ```
 
 ```{r}
-#plot(repeat_dn.negabin, which = 3)
+plot(repeat_dn.negabin, which = 3)
 ```
 
 ```{r}
@@ -127,7 +127,7 @@ autoplot(new_dn.poisson,which = 1:6, ncol = 3, label.size = 3,shape = 1, alpha =
 
 ```{r}
 
-#autoplot(new_dn.negabin,which = 1:6, ncol = 3, label.size = 3,shape = 1, alpha = 0.7)
+autoplot(new_dn.negabin,which = 1:6, ncol = 3, label.size = 3,shape = 1, alpha = 0.7)
 ```
 
 ```{r}
@@ -142,7 +142,7 @@ summary(new_dn.poisson)
 ```
 
 ```{r}
-#summary(new_dn.negabin)
+summary(new_dn.negabin)
 ```
 
 ```{r}
@@ -378,7 +378,15 @@ summary(robust_new_poisson)
     
 
 Voisit käyttää pari slidea siihen, että selität mitä ovat mallin virheet, kuva sun mallin virheistä olisi hyvä ja sitten käyt läpi ne jakauma vaihtoehdot ja ehkä jopa piirrät jakauma vaihtoehdot mallin virheiden päälle. Virhejakauman muodon valinta on kuitenkin tässä yksi tärkeimpiä asioita.
+```{r}
+coef(summary(repeat_donor_qpoisson))
+coef(summary(new_donor_qpoisson))
 
+```
+
+```{r}
+plot(lm(repeat_donor_qpoisson))
+```
 
 conway-maxwell poisson regression 
 
@@ -387,7 +395,6 @@ library(COMPoissonReg)
 
 
 ```
-Ideally plot the predicted effect over time along with 95% CIs, since the last sentence is too technical for non-statistical reviewers.
 
 
 Yet another approach would be to take the absolute values of, in your model, the Z-statistics, sum them up and then repercentage each abs parameter with that total. By ranking those relativized percentages, a viable heuristic for relative importance can be easily obtained.
@@ -406,7 +413,7 @@ For example, as a tool wears out, the number of defects may increase. The increa
 
 autocorrelation
 
-
+moran I Index
 
 
 #bootstrapping
