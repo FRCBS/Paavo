@@ -14,14 +14,14 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.2.0          ✔ purrr   0.3.2     
     ## ✔ tibble  2.1.3          ✔ dplyr   0.8.2     
     ## ✔ tidyr   0.8.3.9000     ✔ stringr 1.4.0     
     ## ✔ readr   1.3.1          ✔ forcats 0.4.0
 
-    ## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -240,8 +240,8 @@ new_dn.poisson <- glm(prop_new_donors ~ medianincome + higher_education + eligib
 
 ``` r
 # Lets make binomial model for comparison 
-#repeat_dn.negabin <- MASS::glm.nb(prop_repea_tdonors ~ medianincome + higher_education + eligible_population + minDistkm, data=data)
-#new_dn.negabin<-MASS::glm.nb(prop_new_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=data)
+repeat_dn.negabin <- MASS::glm.nb(prop_repeat_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=data)
+new_dn.negabin<-MASS::glm.nb(prop_new_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=data)
 
 #quasipoisson
 repeat_dn.qpoisson <- glm(prop_repeat_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=data,family=quasipoisson)  
@@ -263,8 +263,12 @@ autoplot(repeat_dn.poisson,which = 1:6, ncol = 3, label.size = 3,shape = 1, alph
 binomial
 
 ``` r
-#autoplot(repeat_dn.negabin,which = 1:6, ncol = 3, label.size = 3,shape = 1, alpha = 0.7) 
+autoplot(repeat_dn.negabin,which = 1:6, ncol = 3, label.size = 3,shape = 1, alpha = 0.7) 
 ```
+
+    ## Warning: Ignoring unknown parameters: shape
+
+![](glm_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 \#quasi-poisson
 
@@ -283,8 +287,10 @@ plot(repeat_dn.poisson, which = 3)
 ![](glm_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
-#plot(repeat_dn.negabin, which = 3)
+plot(repeat_dn.negabin, which = 3)
 ```
+
+![](glm_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 plot(repeat_dn.qpoisson, which = 3)
@@ -324,8 +330,43 @@ summary(repeat_dn.poisson)
     ## Number of Fisher Scoring iterations: 6
 
 ``` r
-#summary(repeat_dn.negabin)
+summary(repeat_dn.negabin)
 ```
+
+    ## 
+    ## Call:
+    ## MASS::glm.nb(formula = prop_repeat_donors ~ medianincome + higher_education + 
+    ##     eligible_population + minDistkm, data = data, init.theta = 363422.744, 
+    ##     link = log)
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -0.5137  -0.4286  -0.3692   0.4675   0.5659  
+    ## 
+    ## Coefficients:
+    ##                       Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)         -3.403e+00  9.226e-01  -3.689 0.000225 ***
+    ## medianincome        -3.484e-05  2.771e-04  -0.126 0.899924    
+    ## higher_education     2.048e-01  5.934e+00   0.035 0.972475    
+    ## eligible_population -5.459e-05  1.823e-04  -0.299 0.764657    
+    ## minDistkm           -1.824e-02  9.602e-02  -0.190 0.849350    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for Negative Binomial(363422.7) family taken to be 1)
+    ## 
+    ##     Null deviance: 36.597  on 177  degrees of freedom
+    ## Residual deviance: 36.348  on 173  degrees of freedom
+    ## AIC: 52.986
+    ## 
+    ## Number of Fisher Scoring iterations: 1
+    ## 
+    ## 
+    ##               Theta:  363423 
+    ##           Std. Err.:  52553802 
+    ## Warning while fitting theta: iteration limit reached 
+    ## 
+    ##  2 x log-likelihood:  -40.986
 
 ``` r
 summary(repeat_dn.qpoisson)
@@ -370,8 +411,12 @@ autoplot(new_dn.poisson,which = 1:6, ncol = 3, label.size = 3,shape = 1, alpha =
 ![](glm_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ``` r
-#autoplot(new_dn.negabin,which = 1:6, ncol = 3, label.size = 3,shape = 1, alpha = 0.7)
+autoplot(new_dn.negabin,which = 1:6, ncol = 3, label.size = 3,shape = 1, alpha = 0.7)
 ```
+
+    ## Warning: Ignoring unknown parameters: shape
+
+![](glm_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 ``` r
 autoplot(new_dn.qpoisson,which = 1:6, ncol = 3, label.size = 3,shape = 1, alpha = 0.7)
@@ -415,8 +460,43 @@ summary(new_dn.poisson)
     ## Number of Fisher Scoring iterations: 8
 
 ``` r
-#summary(new_dn.negabin)
+summary(new_dn.negabin)
 ```
+
+    ## 
+    ## Call:
+    ## MASS::glm.nb(formula = prop_new_donors ~ medianincome + higher_education + 
+    ##     eligible_population + minDistkm, data = data, init.theta = 146724.4497, 
+    ##     link = log)
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -0.2370  -0.1867  -0.1288   0.2273   0.3164  
+    ## 
+    ## Coefficients:
+    ##                       Estimate Std. Error z value Pr(>|z|)  
+    ## (Intercept)         -5.304e+00  2.540e+00  -2.088   0.0368 *
+    ## medianincome        -3.690e-05  7.548e-04  -0.049   0.9610  
+    ## higher_education     4.710e-01  1.615e+01   0.029   0.9767  
+    ## eligible_population -4.029e-05  4.929e-04  -0.082   0.9348  
+    ## minDistkm           -3.016e-02  2.739e-01  -0.110   0.9123  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for Negative Binomial(146724.4) family taken to be 1)
+    ## 
+    ##     Null deviance: 7.7927  on 177  degrees of freedom
+    ## Residual deviance: 7.7440  on 173  degrees of freedom
+    ## AIC: 20.345
+    ## 
+    ## Number of Fisher Scoring iterations: 1
+    ## 
+    ## 
+    ##               Theta:  146724 
+    ##           Std. Err.:  36419777 
+    ## Warning while fitting theta: iteration limit reached 
+    ## 
+    ##  2 x log-likelihood:  -8.345
 
 ``` r
 summary(new_dn.qpoisson)
@@ -2723,7 +2803,8 @@ single.row = TRUE,
           covariate.labels = c("Median income", "Higher education", "eligible population", "minimum distance km"),
          column.labels = c("Repeat donors","First time donors","Repeat donors","First time donors", "Repeat donors", "First time donors"),
           #dep.var.caption   = "BMI", 
-          dep.var.labels.include = FALSE)
+          dep.var.labels.include = FALSE,
+       out="robustandscaled.rtable.htm")
 ```
 
     ## 
@@ -2753,10 +2834,6 @@ single.row = TRUE,
     ## \textit{Note:}  & \multicolumn{6}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
     ## \end{tabular} 
     ## \end{table}
-
-``` r
-       #out="robustandscaled.rtable.htm")
-```
 
 ``` r
 #stargazer(repeat_donor_poisson,new_donor_poisson, robust_repeat_poisson,robust_new_poisson,repeat_donor_qpoisson,new_donor_qpoisson,repeat_donor_quasibino,new_donor_quasibino, intercept.bottom = TRUE,
@@ -2813,16 +2890,203 @@ regression
 \#quasibinomial
 
 ``` r
-#repeat_donor_quasibino<- glm(prop_repeat_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=sc_data,family= quasibinomial)
+repeat_donor_quasibino<- glm(prop_repeat_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=sc_data,family= quasibinomial)
 
-#new_donor_quasibino <-  glm(prop_new_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=sc_data,family= quasibinomial)
+new_donor_quasibino <-  glm(prop_new_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=sc_data,family= quasibinomial)
 ```
+
+Quasipoisson models are not likelihood based. They maximize a
+“quasilikelihood” which is a Poisson likelihood up to a proportional
+constant. That proportional constant happens to be the dispersion. The
+dispersion is considered a nuisance parameter. While the maximization
+routine comes up with an estimate of the nuisance parameter, that
+estimate is merely an artifact of the data rather than any value which
+generalizes to the population. The dispersion only serves to “shrink” or
+“widen” the SEs of the regression parameters according to whether the
+variance is proportionally smaller than or larger than the mean. Since
+the dispersion is treated as a nuisance parameter, quasipoisson models
+enjoy a host of robust properties: the data can in fact be
+heteroscedastic (not meeting the proportional mean-variance assumption)
+and even exhibit small sources of dependence, and the mean model need
+not be exactly correct, but the 95% CIs for the regression parameters
+are asymptotically correct. If your goal of the data analysis is to
+measure the association between a set of regression parameters and the
+outcome, quasipoisson models are usually the way to go. A limitation of
+these models is that they cannot yield prediction intervals, the Pearson
+residuals cannot tell you much about how accurate the mean model is, and
+information criteria like the AIC or BIC cannot effectively compare
+these models to other types of models.
+
+``` r
+summary(repeat_donor_qpoisson)
+```
+
+    ## 
+    ## Call:
+    ## glm(formula = prop_repeat_donors ~ medianincome + higher_education + 
+    ##     eligible_population + minDistkm, family = quasipoisson, data = sc_data)
+    ## 
+    ## Deviance Residuals: 
+    ##       Min         1Q     Median         3Q        Max  
+    ## -0.082423  -0.025651  -0.003497   0.020694   0.089525  
+    ## 
+    ## Coefficients:
+    ##                      Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)         -3.403056   0.034195 -99.518  < 2e-16 ***
+    ## medianincome        -0.094777   0.027934  -3.393 0.000857 ***
+    ## higher_education     0.030124   0.032359   0.931 0.353186    
+    ## eligible_population -0.149946   0.018565  -8.077 1.09e-13 ***
+    ## minDistkm           -0.018238   0.003559  -5.125 7.90e-07 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for quasipoisson family taken to be 0.00137378)
+    ## 
+    ##     Null deviance: 0.48341  on 177  degrees of freedom
+    ## Residual deviance: 0.23469  on 173  degrees of freedom
+    ## AIC: NA
+    ## 
+    ## Number of Fisher Scoring iterations: 6
+
+``` r
+summary(repeat_donor_quasibino)
+```
+
+    ## 
+    ## Call:
+    ## glm(formula = prop_repeat_donors ~ medianincome + higher_education + 
+    ##     eligible_population + minDistkm, family = quasibinomial, 
+    ##     data = sc_data)
+    ## 
+    ## Deviance Residuals: 
+    ##       Min         1Q     Median         3Q        Max  
+    ## -0.083520  -0.026107  -0.003576   0.021070   0.091117  
+    ## 
+    ## Coefficients:
+    ##                      Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)         -3.368949   0.035260 -95.547  < 2e-16 ***
+    ## medianincome        -0.097985   0.028808  -3.401 0.000833 ***
+    ## higher_education     0.030975   0.033388   0.928 0.354838    
+    ## eligible_population -0.154320   0.019111  -8.075 1.10e-13 ***
+    ## minDistkm           -0.018765   0.003666  -5.119 8.13e-07 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for quasibinomial family taken to be 0.001416579)
+    ## 
+    ##     Null deviance: 0.49819  on 177  degrees of freedom
+    ## Residual deviance: 0.24213  on 173  degrees of freedom
+    ## AIC: NA
+    ## 
+    ## Number of Fisher Scoring iterations: 7
+
+``` r
+summary(new_donor_qpoisson)
+```
+
+    ## 
+    ## Call:
+    ## glm(formula = prop_new_donors ~ medianincome + higher_education + 
+    ##     eligible_population + minDistkm, family = quasipoisson, data = sc_data)
+    ## 
+    ## Deviance Residuals: 
+    ##       Min         1Q     Median         3Q        Max  
+    ## -0.045714  -0.014057  -0.000179   0.009805   0.065185  
+    ## 
+    ## Coefficients:
+    ##                      Estimate Std. Error  t value Pr(>|t|)    
+    ## (Intercept)         -5.303849   0.051866 -102.261  < 2e-16 ***
+    ## medianincome        -0.100382   0.041929   -2.394   0.0177 *  
+    ## higher_education     0.069299   0.048511    1.429   0.1549    
+    ## eligible_population -0.110671   0.027647   -4.003 9.26e-05 ***
+    ## minDistkm           -0.030161   0.005593   -5.392 2.26e-07 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for quasipoisson family taken to be 0.0004170568)
+    ## 
+    ##     Null deviance: 0.118964  on 177  degrees of freedom
+    ## Residual deviance: 0.070255  on 173  degrees of freedom
+    ## AIC: NA
+    ## 
+    ## Number of Fisher Scoring iterations: 8
+
+``` r
+summary(new_donor_quasibino)
+```
+
+    ## 
+    ## Call:
+    ## glm(formula = prop_new_donors ~ medianincome + higher_education + 
+    ##     eligible_population + minDistkm, family = quasibinomial, 
+    ##     data = sc_data)
+    ## 
+    ## Deviance Residuals: 
+    ##       Min         1Q     Median         3Q        Max  
+    ## -0.045787  -0.014090  -0.000180   0.009816   0.065303  
+    ## 
+    ## Coefficients:
+    ##                      Estimate Std. Error  t value Pr(>|t|)    
+    ## (Intercept)         -5.298955   0.052079 -101.748  < 2e-16 ***
+    ## medianincome        -0.100855   0.042104   -2.395   0.0177 *  
+    ## higher_education     0.069623   0.048716    1.429   0.1548    
+    ## eligible_population -0.111113   0.027756   -4.003 9.26e-05 ***
+    ## minDistkm           -0.030267   0.005615   -5.390 2.28e-07 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for quasibinomial family taken to be 0.0004187661)
+    ## 
+    ##     Null deviance: 0.119444  on 177  degrees of freedom
+    ## Residual deviance: 0.070549  on 173  degrees of freedom
+    ## AIC: NA
+    ## 
+    ## Number of Fisher Scoring iterations: 9
 
 # Predictions
 
-\#Beta regression model
+Voisit käyttää pari slidea siihen, että selität mitä ovat mallin
+virheet, kuva sun mallin virheistä olisi hyvä ja sitten käyt läpi ne
+jakauma vaihtoehdot ja ehkä jopa piirrät jakauma vaihtoehdot mallin
+virheiden päälle. Virhejakauman muodon valinta on kuitenkin tässä yksi
+tärkeimpiä
+    asioita.
 
-\#extrafun
+``` r
+coef(summary(repeat_donor_qpoisson))
+```
+
+    ##                        Estimate  Std. Error    t value      Pr(>|t|)
+    ## (Intercept)         -3.40305582 0.034195313 -99.518196 1.228344e-154
+    ## medianincome        -0.09477666 0.027933501  -3.392939  8.571535e-04
+    ## higher_education     0.03012388 0.032358806   0.930933  3.531855e-01
+    ## eligible_population -0.14994595 0.018564502  -8.077025  1.088110e-13
+    ## minDistkm           -0.01823836 0.003558862  -5.124771  7.903265e-07
+
+``` r
+coef(summary(new_donor_qpoisson))
+```
+
+    ##                        Estimate  Std. Error     t value      Pr(>|t|)
+    ## (Intercept)         -5.30384900 0.051865659 -102.261287 1.203265e-156
+    ## medianincome        -0.10038207 0.041929388   -2.394074  1.773170e-02
+    ## higher_education     0.06929902 0.048510502    1.428536  1.549405e-01
+    ## eligible_population -0.11067105 0.027646645   -4.003055  9.263059e-05
+    ## minDistkm           -0.03016057 0.005593453   -5.392120  2.258128e-07
+
+``` r
+plot(lm(repeat_donor_qpoisson))
+```
+
+![](glm_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->![](glm_files/figure-gfm/unnamed-chunk-44-2.png)<!-- -->![](glm_files/figure-gfm/unnamed-chunk-44-3.png)<!-- -->![](glm_files/figure-gfm/unnamed-chunk-44-4.png)<!-- -->
+
+conway-maxwell poisson regression
+
+``` r
+library(COMPoissonReg)
+```
+
+    ## Loading required package: Rcpp
 
 Yet another approach would be to take the absolute values of, in your
 model, the Z-statistics, sum them up and then repercentage each abs
@@ -2834,6 +3098,27 @@ Generalized Linear Model, only in their link function (log as opposed to
 logit) and probability distribution (Poisson as opposed to Bernoulli),
 the solutions applied to the logit regression should hold on Poisson
 regression when changing these two model specifications.
+
+underdispersion is the opposite of overdispersion. Underdispersion
+exists when data exhibit less variation than you would expect based on a
+binomial distribution (for defectives) or a Poisson distribution (for
+defects). Underdispersion can occur when adjacent subgroups are
+correlated with each other, also known as autocorrelation.
+
+When data exhibit underdispersion, the control limits on a traditional P
+chart or U chart may be too wide. If the control limits are too wide,
+you can overlook special-cause variation and mistake it for common-cause
+variation. If there is underdispersion, the control limits on a Laney
+attributes chart are narrower than those of a traditional attributes
+chart.
+
+For example, as a tool wears out, the number of defects may increase.
+The increase in defect counts across subgroups can make the subgroups
+more similar than they would be by chance.
+
+autocorrelation
+
+moran I Index
 
 \#bootstrapping great advantage of bootstrap is its simplicity. It is a
 straightforward way to derive estimates of standard errors and

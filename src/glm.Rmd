@@ -110,7 +110,7 @@ summary(repeat_dn.poisson)
 ```
 
 ```{r}
-#summary(repeat_dn.negabin)
+summary(repeat_dn.negabin)
 ```
 
 ```{r}
@@ -354,9 +354,10 @@ single.row = TRUE,
 
 #quasibinomial
 ```{r}
-#repeat_donor_quasibino<- glm(prop_repeat_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=sc_data,family= quasibinomial)
+repeat_donor_quasibino<- glm(prop_repeat_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=sc_data,family= quasibinomial)
 
-#new_donor_quasibino <-  glm(prop_new_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=sc_data,family= quasibinomial)
+new_donor_quasibino <-  glm(prop_new_donors ~ medianincome + higher_education + eligible_population + minDistkm, data=sc_data,family= quasibinomial)
+
 ```
 
 Quasipoisson models are not likelihood based. They maximize a "quasilikelihood" which is a Poisson likelihood up to a proportional constant. That proportional constant happens to be the dispersion. The dispersion is considered a nuisance parameter. While the maximization routine comes up with an estimate of the nuisance parameter, that estimate is merely an artifact of the data rather than any value which generalizes to the population. The dispersion only serves to "shrink" or "widen" the SEs of the regression parameters according to whether the variance is proportionally smaller than or larger than the mean. Since the dispersion is treated as a nuisance parameter, quasipoisson models enjoy a host of robust properties: the data can in fact be heteroscedastic (not meeting the proportional mean-variance assumption) and even exhibit small sources of dependence, and the mean model need not be exactly correct, but the 95% CIs for the regression parameters are asymptotically correct. If your goal of the data analysis is to measure the association between a set of regression parameters and the outcome, quasipoisson models are usually the way to go. A limitation of these models is that they cannot yield prediction intervals, the Pearson residuals cannot tell you much about how accurate the mean model is, and information criteria like the AIC or BIC cannot effectively compare these models to other types of models.
@@ -364,9 +365,9 @@ Quasipoisson models are not likelihood based. They maximize a "quasilikelihood" 
 
 ```{r}
 summary(repeat_donor_qpoisson)
+summary(repeat_donor_quasibino)
 summary(new_donor_qpoisson)
-summary(robust_repeat_poisson)
-summary(robust_new_poisson)
+summary(new_donor_quasibino)
 ```
 
 # Predictions 
